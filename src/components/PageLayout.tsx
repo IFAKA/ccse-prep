@@ -57,7 +57,7 @@ export function SurfaceCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border border-[var(--separator)] bg-[var(--surface)] shadow-sm ${className}`}
+      className={`surface-card rounded-2xl border border-[var(--separator)] bg-[var(--surface)] shadow-sm ${className}`}
     >
       {children}
     </div>

@@ -53,8 +53,8 @@ export default function AppShell() {
       </div>
     </header>
 
-    <main className="mx-auto min-h-screen max-w-3xl px-4 pb-24 sm:px-6 sm:pb-12">
-      {!ready ? <div className="py-20 text-center text-[var(--secondary)]" role="status" aria-live="polite">Loading…</div> : <div key={activeTab} className="pt-4 sm:pt-8">
+    <main className="app-content mx-auto min-h-screen max-w-3xl">
+      {!ready ? <div className="py-20 text-center text-[var(--secondary)]" role="status" aria-live="polite">Loading…</div> : <div key={activeTab} className="pt-5 sm:pt-10">
         {activeTab === "study" ? <StudyView state={state} update={update} /> : activeTab === "mock" ? <MockView state={state} update={update} /> : activeTab === "errors" ? <MistakesView state={state} update={update} /> : activeTab === "progress" ? <ProgressView state={state} update={update} /> : <SettingsView state={state} update={update} />}
       </div>}
       <footer className="hidden border-t border-[var(--separator)] pt-4 text-[12px] text-[var(--secondary)] sm:flex sm:justify-between">

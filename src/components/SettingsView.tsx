@@ -36,10 +36,10 @@ export default function SettingsView({ state, update }: { state: AppState; updat
   return <section className="view-enter">
     <PageHeader title="Make it yours." description="Simple preferences for a focused, local-first study desk." />
 
-    <div className="mt-8 grid gap-8">
-      <SurfaceCard className="p-5 sm:p-6">
+    <div className="section-stack">
+      <SurfaceCard className="p-4 sm:p-6">
         <SectionHeading description="Small feedback for answers and study actions. Your choice stays on this device.">Sound</SectionHeading>
-        <div className="mt-5 flex min-h-14 items-center justify-between gap-4 border-t border-[var(--separator)] pt-4">
+        <div className="mt-5 flex min-h-14 items-center justify-between gap-4 border-t border-[var(--separator)] pt-5">
           <div>
             <p className="font-medium">Sound Effects</p>
             <p className="mt-1 text-[13px] text-[var(--secondary)]">Play gentle tones for correct, incorrect, and completed actions.</p>
@@ -48,7 +48,7 @@ export default function SettingsView({ state, update }: { state: AppState; updat
         </div>
       </SurfaceCard>
 
-      <SurfaceCard className="p-5 sm:p-6">
+      <SurfaceCard className="p-4 sm:p-6">
         <SectionHeading description="Your study history stays in this browser unless you export or sync it.">Local Data</SectionHeading>
         <div className="mt-5 grid gap-3 border-t border-[var(--separator)] pt-4 sm:flex sm:flex-wrap">
           <button type="button" onClick={download} className="focus-ring min-h-11 rounded-xl border border-[var(--separator)] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Export State</button>

@@ -35,6 +35,10 @@ function QuestionCounter({ value }: { value: number }) {
   const fromDigits = String(transition.from).padStart(4, "0");
   const toDigits = String(transition.to).padStart(4, "0");
   const isMoving = transition.from !== transition.to;
+  const changedIndices = toDigits
+    .split("")
+    .map((digit, index) => (digit === fromDigits[index] ? -1 : index))
+    .filter((index) => index !== -1);
 
   return (
     <span className="question-counter inline-flex items-baseline" aria-label={`Question ${value}`}>
@@ -43,19 +47,22 @@ function QuestionCounter({ value }: { value: number }) {
         {toDigits.split("").map((digit, index) => {
           const fromDigit = fromDigits[index];
           const key = `${transition.from}-${transition.to}-${index}`;
+          const changed = fromDigit !== digit;
 
-          if (!isMoving || reduceMotion) {
+          if (!isMoving || reduceMotion || !changed) {
             return <span className="question-counter-digit" key={key}>{digit}</span>;
           }
 
           const goingUp = transition.direction === "up";
+          const changedIndex = changedIndices.indexOf(index);
+          const delay = (changedIndices.length - 1 - changedIndex) * 0.04;
           return (
             <span className="question-counter-digit" key={key}>
               <motion.span
                 className="question-counter-track"
                 initial={{ transform: goingUp ? "translateY(0%)" : "translateY(-50%)" }}
                 animate={{ transform: goingUp ? "translateY(-50%)" : "translateY(0%)" }}
-                transition={{ duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.22, delay, ease: [0.23, 1, 0.32, 1] }}
               >
                 {goingUp ? <span>{fromDigit}</span> : <span>{digit}</span>}
                 {goingUp ? <span>{digit}</span> : <span>{fromDigit}</span>}
@@ -199,7 +206,7 @@ export default function StudyView({
   };
 
   return (
-    <section className="view-enter pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-0">
+    <section className="view-enter pb-[calc(10rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PageHeader
         title={<QuestionCounter value={question.id} />}
         titleMeta={
@@ -215,12 +222,12 @@ export default function StudyView({
         }
       />
 
-      <SurfaceCard className="mt-3 p-4 sm:mt-9 sm:p-6">
+      <SurfaceCard className="page-section p-4 sm:p-6">
         <h2 className="max-w-2xl text-[25px] font-semibold leading-[1.2] tracking-[-0.02em] sm:text-[32px]">
           {question.question}
         </h2>
 
-        <div className="mt-6 grid gap-2.5" role="group" aria-label="Answer choices">
+        <div className="mt-6 grid gap-3" role="group" aria-label="Answer choices">
           {optionKeys.map((key) => {
             const isSelected = selected === key;
             const isOfficial = submitted && key === question.answer;
@@ -288,7 +295,7 @@ export default function StudyView({
         )}
       </SurfaceCard>
 
-      <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 mt-4 sm:sticky sm:bottom-3">
+      <div className="mobile-action-bar fixed inset-x-0 bottom-0 z-10 mt-4 bg-[color:var(--bg)/.82] px-4 pt-3 backdrop-blur-xl sm:sticky sm:bottom-3 sm:bg-transparent sm:px-0 sm:pt-0 sm:backdrop-blur-none">
         <div className="mx-auto max-w-3xl rounded-2xl border border-[var(--separator)] bg-[color:var(--bg)/.92] p-1.5 backdrop-blur-xl sm:mx-0">
           <button
             type="button"
