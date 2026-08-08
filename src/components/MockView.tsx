@@ -50,7 +50,7 @@ export default function MockView({ state, update }: { state: AppState; update: (
 
   if (result) {
     return <section className="view-enter">
-      <PageHeader eyebrow="Mock complete" title={`${result.score}/25`} description={`${result.score >= 15 ? "Aprobado" : "Sigue entrenando"} · threshold 15/25`} />
+      <PageHeader title={`${result.score}/25`} description={`${result.score >= 15 ? "Aprobado" : "Sigue entrenando"} · threshold 15/25`} />
       <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
         {Object.entries(result.taskBreakdown).map(([task, value]) => <StatCard key={task} label={`Task ${task}`} value={`${value.correct}/${value.total}`} />)}
       </div>
@@ -60,7 +60,7 @@ export default function MockView({ state, update }: { state: AppState; update: (
 
   if (!active) {
     return <section className="view-enter">
-      <PageHeader eyebrow="Exam simulation" title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
+      <PageHeader title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
       <button onClick={start} className="focus-ring mt-8 min-h-12 rounded-xl bg-[var(--label)] px-7 font-semibold text-[var(--surface)]">Start Mock</button>
     </section>;
   }

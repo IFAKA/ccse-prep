@@ -1,31 +1,20 @@
 import type { ReactNode } from "react";
 
 export function PageHeader({
-  eyebrow,
   title,
   titleMeta,
   description,
   aside,
-  hideEyebrowOnMobile = false,
 }: {
-  eyebrow?: ReactNode;
   title: string;
   titleMeta?: ReactNode;
   description?: string;
   aside?: ReactNode;
-  hideEyebrowOnMobile?: boolean;
 }) {
-  const hasEyebrow = eyebrow != null;
-
   return (
     <header className="page-header flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl">
-        {hasEyebrow && (
-          <p className={`${hideEyebrowOnMobile ? "hidden sm:block" : ""} text-xs font-semibold uppercase tracking-[0.18em] text-[var(--tint)]`}>
-            {eyebrow}
-          </p>
-        )}
-        <h1 className={`${hasEyebrow ? (hideEyebrowOnMobile ? "mt-0 sm:mt-3" : "mt-3") : "mt-0"} text-3xl font-bold tracking-[-0.035em] sm:text-5xl`}>
+        <h1 className="mt-0 text-3xl font-bold tracking-[-0.035em] sm:text-5xl">
           {title}
         </h1>
         {titleMeta && <div className="mt-3">{titleMeta}</div>}

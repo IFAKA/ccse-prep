@@ -34,7 +34,7 @@ export default function SettingsView({ state, update }: { state: AppState; updat
   };
 
   return <section className="view-enter">
-    <PageHeader eyebrow="Settings" title="Make it yours." description="Simple preferences for a focused, local-first study desk." />
+    <PageHeader title="Make it yours." description="Simple preferences for a focused, local-first study desk." />
 
     <div className="mt-8 grid gap-8">
       <SurfaceCard className="p-5 sm:p-6">
