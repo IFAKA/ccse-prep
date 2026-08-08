@@ -24,6 +24,16 @@ export default function StudyView({
   const [startedAt, setStartedAt] = useState(Date.now());
   const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [closingShortcuts, setClosingShortcuts] = useState(false);
+
+  const closeShortcuts = useCallback(() => {
+    if (!showShortcuts || closingShortcuts) return;
+    setClosingShortcuts(true);
+    window.setTimeout(() => {
+      setShowShortcuts(false);
+      setClosingShortcuts(false);
+    }, 180);
+  }, [closingShortcuts, showShortcuts]);
 
   const submit = useCallback(() => {
     if (!selected || submitted) return;
@@ -68,12 +78,16 @@ export default function StudyView({
         submitted ? next() : submit();
       }
 
-      if (event.key === "?") setShowShortcuts(true);
+      if (event.key === "?") {
+        setClosingShortcuts(false);
+        setShowShortcuts(true);
+      }
+      if (event.key === "Escape") closeShortcuts();
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [next, question.options, submit, submitted]);
+  }, [closeShortcuts, next, question.options, submit, submitted]);
 
   const correct = submitted && selected ? grade(question, selected) : false;
   const optionKeys = Object.keys(question.options) as AnswerKey[];
@@ -163,7 +177,7 @@ export default function StudyView({
 
         {submitted && (
           <div
-            className={`mt-5 rounded-xl border p-4 ${
+            className={`answer-feedback mt-5 rounded-xl border p-4 ${
               correct
                 ? "border-[var(--success)] bg-[color:var(--success)/.1]"
                 : "border-[var(--danger)] bg-[color:var(--danger)/.1]"
@@ -209,13 +223,13 @@ export default function StudyView({
       </div>
 
       {showShortcuts && (
-        <div className="fixed inset-0 z-30 flex items-end bg-black/30 p-4 sm:items-center sm:justify-center">
-          <div className="w-full max-w-sm rounded-2xl bg-[var(--surface)] p-5 shadow-xl">
+        <div className={`shortcut-backdrop fixed inset-0 z-30 flex items-end p-4 sm:items-center sm:justify-center ${closingShortcuts ? "is-closing" : ""}`}>
+          <div className={`shortcut-dialog w-full max-w-sm rounded-2xl bg-[var(--surface)] p-5 shadow-xl ${closingShortcuts ? "is-closing" : ""}`} role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
             <div className="flex items-center justify-between">
-              <h3 className="text-[17px] font-semibold">Keyboard shortcuts</h3>
+              <h3 id="shortcuts-title" className="text-[17px] font-semibold">Keyboard Shortcuts</h3>
               <button
                 type="button"
-                onClick={() => setShowShortcuts(false)}
+                onClick={closeShortcuts}
                 className="focus-ring min-h-11 min-w-11 rounded-full text-xl text-[var(--secondary)]"
                 aria-label="Close shortcuts"
               >
