@@ -5,19 +5,21 @@ export function PageHeader({
   title,
   description,
   aside,
+  hideEyebrowOnMobile = false,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
   aside?: ReactNode;
+  hideEyebrowOnMobile?: boolean;
 }) {
   return (
     <header className="page-header flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--tint)]">
+        <p className={`${hideEyebrowOnMobile ? "hidden sm:block" : ""} text-xs font-semibold uppercase tracking-[0.18em] text-[var(--tint)]`}>
           {eyebrow}
         </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-[-0.035em] sm:text-5xl">
+        <h1 className={`${hideEyebrowOnMobile ? "mt-0 sm:mt-3" : "mt-3"} text-4xl font-bold tracking-[-0.035em] sm:text-5xl`}>
           {title}
         </h1>
         {description && (

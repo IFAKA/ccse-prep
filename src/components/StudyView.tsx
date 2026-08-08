@@ -126,10 +126,11 @@ export default function StudyView({
   };
 
   return (
-    <section className="view-enter">
+    <section className="view-enter pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PageHeader
         eyebrow="Study"
         title={`Task ${question.task} · Question ${question.id}`}
+        hideEyebrowOnMobile
         aside={
           <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--secondary)]">
             {state.questionStates[question.id]?.status ?? "unseen"}
@@ -210,8 +211,8 @@ export default function StudyView({
         )}
       </SurfaceCard>
 
-      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 mt-4 sm:bottom-3">
-        <div className="rounded-2xl border border-[var(--separator)] bg-[color:var(--bg)/.92] p-1.5 backdrop-blur-xl">
+      <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 mt-4 sm:sticky sm:bottom-3">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-[var(--separator)] bg-[color:var(--bg)/.92] p-1.5 backdrop-blur-xl sm:mx-0">
           <button
             type="button"
             onClick={submitted ? next : submit}
