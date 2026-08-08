@@ -1,0 +1,13 @@
+import type { AnswerKey, Question, Task } from "@/data/questions";
+export type QuestionStatus = "unseen" | "learning" | "weak" | "mastered";
+export type QuestionState = { attempts:number; correct:number; incorrect:number; consecutiveCorrect:number; firstSeenAt?:number; lastSeenAt?:number; nextReviewAt?:number; lastResponseMs?:number; status:QuestionStatus; misconceptionSummary?:string };
+export type MockResult = { id:string; timestamp:number; score:number; taskBreakdown:Record<Task,{correct:number;total:number}>; mistakes:number[]; durationMs:number };
+export type StudySession = { id:string; startedAt:number; endedAt?:number; answered:number; correct:number };
+export type Memory = { questionId:number; concept:string; misconception:string; correctedUnderstanding:string; updatedAt:number };
+export type Settings = { sound:boolean; dailyTarget:number };
+export type AppState = { schemaVersion:number; questionStates:Record<number,QuestionState>; mockHistory:MockResult[]; sessions:StudySession[]; settings:Settings; memories:Memory[]; events:AppEvent[] };
+export type AppEvent = { eventId:string; deviceId:string; timestamp:number; type:"ANSWER_RECORDED"|"MOCK_COMPLETED"|"MISCONCEPTION_UPDATED"; payload:Record<string,unknown> };
+export type ExplanationInput = { question:Question; officialAnswer:AnswerKey; selectedAnswer?:AnswerKey; manualChunks:string[]; misconceptionSummary?:string };
+export type Explanation = { text:string; sourcePages:number[] };
+export type TutorChatInput = { questionId:number; message:string; context:string[]; memory?:Memory };
+export type TutorMessage = { role:"assistant"; content:string; memory?:Omit<Memory,"updatedAt"> };

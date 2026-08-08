@@ -1,0 +1,2 @@
+import {describe,expect,it} from "vitest"; import {questions} from "@/data/questions";
+describe("official bank",()=>{it("has 300 valid questions",()=>{expect(questions).toHaveLength(300);expect(new Set(questions.map(q=>q.id)).size).toBe(300);for(const q of questions)expect(q.options[q.answer]).toBeTruthy()});it("has exact task composition",()=>expect(Object.groupBy(questions,q=>q.task)).toMatchObject({1:expect.any(Array),2:expect.any(Array),3:expect.any(Array),4:expect.any(Array),5:expect.any(Array)}))});

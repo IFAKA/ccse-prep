@@ -1,0 +1,2 @@
+import {it,expect} from "vitest"; import {DisabledExplanationProvider} from "@/lib/ai"; import {questions} from "@/data/questions";
+it('AI provider cannot change official grading',async()=>{const q=questions[0];const result=await new DisabledExplanationProvider().explain({question:q,officialAnswer:q.answer,manualChunks:[]});expect(q.answer).toBe('a');expect(result.sourcePages).toContain(q.page)});
