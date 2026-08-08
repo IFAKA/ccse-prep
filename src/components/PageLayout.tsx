@@ -7,7 +7,7 @@ export function PageHeader({
   aside,
   hideEyebrowOnMobile = false,
 }: {
-  eyebrow: string;
+  eyebrow: ReactNode;
   title: string;
   description?: string;
   aside?: ReactNode;

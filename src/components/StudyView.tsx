@@ -11,12 +11,12 @@ import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader, SurfaceCard } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
 
-const taskLabels: Record<Task, string> = {
-  1: "Government, legislation and citizen participation",
-  2: "Fundamental rights and duties",
-  3: "Spain's territorial organization and physical and political geography",
-  4: "Culture and history of Spain",
-  5: "Spanish society",
+const taskLabels: Record<Task, { compact: string; full: string }> = {
+  1: { compact: "Government & Civic Life", full: "Government, legislation and citizen participation" },
+  2: { compact: "Rights & Duties", full: "Fundamental rights and duties" },
+  3: { compact: "Territory & Geography", full: "Spain's territorial organization and physical and political geography" },
+  4: { compact: "Culture & History", full: "Culture and history of Spain" },
+  5: { compact: "Spanish Society", full: "Spanish society" },
 };
 
 export default function StudyView({
@@ -136,7 +136,10 @@ export default function StudyView({
   return (
     <section className="view-enter pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PageHeader
-        eyebrow={taskLabels[question.task]}
+        eyebrow={<span aria-label={taskLabels[question.task].full}>
+          <span className="sm:hidden">{taskLabels[question.task].compact}</span>
+          <span className="hidden sm:inline">{taskLabels[question.task].full}</span>
+        </span>}
         title={`Question ${question.id}`}
         aside={
           <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--secondary)]">
