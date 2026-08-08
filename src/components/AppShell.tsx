@@ -41,7 +41,19 @@ export default function AppShell() {
   const update = (nextState: AppState) => setState(nextState);
 
   return <>
-    <main className="mx-auto min-h-screen max-w-3xl px-4 pb-24 sm:px-6 sm:pb-28">
+    <header className="hidden border-b border-[var(--separator)] bg-[color:var(--surface)/.94] backdrop-blur-xl sm:block">
+      <div className="mx-auto flex h-16 max-w-3xl items-center justify-between gap-6 px-6">
+        <span className="text-sm font-semibold tracking-[-0.01em]">CCSE Desk</span>
+        <nav className="flex items-center gap-1" aria-label="Main navigation">
+          {tabs.map(({ id, label, icon, href }) => <Link key={id} href={href} aria-current={activeTab === id ? "page" : undefined} className={`focus-ring nav-tab flex min-h-11 items-center gap-2 rounded-lg px-3 text-[13px] font-medium ${activeTab === id ? "is-active text-[var(--label)]" : "text-[var(--secondary)]"}`}>
+            <span aria-hidden="true" className="text-base leading-none">{icon}</span>
+            <span>{label}</span>
+          </Link>)}
+        </nav>
+      </div>
+    </header>
+
+    <main className="mx-auto min-h-screen max-w-3xl px-4 pb-24 sm:px-6 sm:pb-12">
       {!ready ? <div className="py-20 text-center text-[var(--secondary)]" role="status" aria-live="polite">Loading…</div> : <div key={activeTab} className="pt-4 sm:pt-8">
         {activeTab === "study" ? <StudyView state={state} update={update} /> : activeTab === "mock" ? <MockView state={state} update={update} /> : activeTab === "errors" ? <MistakesView state={state} update={update} /> : activeTab === "progress" ? <ProgressView state={state} update={update} /> : <SettingsView state={state} update={update} />}
       </div>}
@@ -51,7 +63,7 @@ export default function AppShell() {
       </footer>
     </main>
 
-    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-[var(--separator)] bg-[color:var(--surface)/.94] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl" aria-label="Main navigation">
+    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-[var(--separator)] bg-[color:var(--surface)/.94] pb-[env(safe-area-inset-bottom)] backdrop-blur-xl sm:hidden" aria-label="Main navigation">
       <div className="mx-auto flex max-w-3xl justify-around px-2 sm:justify-center sm:gap-8">
         {tabs.map(({ id, label, icon, href }) => <Link key={id} href={href} aria-current={activeTab === id ? "page" : undefined} className={`focus-ring nav-mobile-tab flex min-h-16 min-w-16 flex-col items-center justify-center gap-1 rounded-lg text-[11px] sm:min-w-20 sm:px-3 sm:text-[13px] ${activeTab === id ? "is-active text-[var(--tint)]" : "text-[var(--secondary)]"}`}>
           <span aria-hidden="true" className="text-lg leading-none">{icon}</span>

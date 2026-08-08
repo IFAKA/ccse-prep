@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { questions, type AnswerKey, type Question } from "@/data/questions";
+import { questions, type AnswerKey, type Question, type Task } from "@/data/questions";
 import { chunksForQuestion } from "@/data/manualKnowledge";
 import { makeEvent, reduceEvent } from "@/lib/events";
 import { appendEvent } from "@/lib/storage";
@@ -10,6 +10,14 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader, SurfaceCard } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
+
+const taskLabels: Record<Task, string> = {
+  1: "Government, legislation and citizen participation",
+  2: "Fundamental rights and duties",
+  3: "Spain's territorial organization and physical and political geography",
+  4: "Culture and history of Spain",
+  5: "Spanish society",
+};
 
 export default function StudyView({
   state,
@@ -128,9 +136,8 @@ export default function StudyView({
   return (
     <section className="view-enter pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PageHeader
-        eyebrow="Study"
-        title={`Task ${question.task} · Question ${question.id}`}
-        hideEyebrowOnMobile
+        eyebrow={taskLabels[question.task]}
+        title={`Question ${question.id}`}
         aside={
           <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--secondary)]">
             {state.questionStates[question.id]?.status ?? "unseen"}

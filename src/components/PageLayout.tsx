@@ -19,7 +19,7 @@ export function PageHeader({
         <p className={`${hideEyebrowOnMobile ? "hidden sm:block" : ""} text-xs font-semibold uppercase tracking-[0.18em] text-[var(--tint)]`}>
           {eyebrow}
         </p>
-        <h1 className={`${hideEyebrowOnMobile ? "mt-0 sm:mt-3" : "mt-3"} text-4xl font-bold tracking-[-0.035em] sm:text-5xl`}>
+        <h1 className={`${hideEyebrowOnMobile ? "mt-0 sm:mt-3" : "mt-3"} text-3xl font-bold tracking-[-0.035em] sm:text-5xl`}>
           {title}
         </h1>
         {description && (
