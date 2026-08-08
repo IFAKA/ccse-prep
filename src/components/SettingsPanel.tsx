@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import SoundToggle from "./SoundToggle";
 
-export default function SettingsPanel() {
+export default function SettingsPanel({ navItem = false }: { navItem?: boolean }) {
   const [open, setOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -20,14 +20,14 @@ export default function SettingsPanel() {
   return <>
     <button
       type="button"
-      className="focus-ring rounded-lg px-2 py-2 text-[13px] text-[var(--secondary)]"
+      className={navItem ? "focus-ring nav-mobile-tab flex min-h-16 min-w-16 flex-col items-center justify-center gap-1 rounded-lg px-2 text-[11px] text-[var(--secondary)] sm:min-w-20 sm:px-3 sm:text-[13px]" : "focus-ring rounded-lg px-2 py-2 text-[13px] text-[var(--secondary)]"}
       aria-label="Open settings"
       aria-expanded={open}
       aria-controls="settings-panel"
       onClick={() => setOpen(true)}
     >
-      <span aria-hidden="true" className="text-base">⚙</span>
-      <span className="sr-only">Settings</span>
+      <span aria-hidden="true" className="text-lg leading-none">⚙</span>
+      <span>{navItem ? "Settings" : <span className="sr-only">Settings</span>}</span>
     </button>
 
     {open && <div className="settings-backdrop fixed inset-0 z-40 flex items-end justify-center bg-black/30 p-4 sm:items-center" onMouseDown={(event) => {
