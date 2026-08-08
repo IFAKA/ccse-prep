@@ -1,2 +1,3 @@
-import AppShell from "@/components/AppShell";
-export default function Page(){return <AppShell/>}
+import {redirect} from "next/navigation";
+
+export default function Page(){redirect("/study")}
