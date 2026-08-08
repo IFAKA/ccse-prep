@@ -46,4 +46,4 @@ The app is a standard Next.js App Router project and can be deployed with:
 vercel --prod
 ```
 
-The production URL is `https://ccse-desk.vercel.app` when that project name is available.
+The production URL is `https://ccse-prep.vercel.app`.

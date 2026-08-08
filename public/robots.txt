@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ccse-desk.vercel.app/sitemap.xml
+Sitemap: https://ccse-prep.vercel.app/sitemap.xml
