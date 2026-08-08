@@ -10,14 +10,16 @@ function shouldShowSplash() {
 }
 
 export default function SplashScreen() {
-  const [visible, setVisible] = useState(shouldShowSplash);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!shouldShowSplash()) return;
+
+    setVisible(true);
     try { window.sessionStorage.setItem(splashSeenKey, "true"); } catch { /* storage can be unavailable */ }
     const timer = window.setTimeout(() => setVisible(false), 1800);
     return () => window.clearTimeout(timer);
-  }, [visible]);
+  }, []);
 
   if (!visible) return null;
   return <div className="splash-screen" role="status" aria-label="CCSE Prep 2026" aria-live="polite">
