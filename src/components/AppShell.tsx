@@ -9,11 +9,11 @@ import type { AppState } from "@/lib/types";
 import MistakesView from "./MistakesView";
 import MockView from "./MockView";
 import ProgressView from "./ProgressView";
-import SettingsPanel from "./SettingsPanel";
+import SettingsView from "./SettingsView";
 import SplashScreen from "./SplashScreen";
 import StudyView from "./StudyView";
 
-type Tab = "study" | "mock" | "errors" | "progress";
+type Tab = "study" | "mock" | "errors" | "progress" | "settings";
 type TabConfig = { id: Tab; label: string; icon: string; href: string };
 
 const tabs: TabConfig[] = [
@@ -21,6 +21,7 @@ const tabs: TabConfig[] = [
   { id: "mock", label: "Mock", icon: "▣", href: "/mock" },
   { id: "errors", label: "Errors", icon: "!", href: "/errors" },
   { id: "progress", label: "Progress", icon: "↗", href: "/progress" },
+  { id: "settings", label: "Settings", icon: "⚙", href: "/settings" },
 ];
 
 export default function AppShell() {
@@ -42,7 +43,7 @@ export default function AppShell() {
   return <>
     <main className="mx-auto min-h-screen max-w-3xl px-4 pb-24 sm:px-6 sm:pb-28">
       {!ready ? <div className="py-20 text-center text-[var(--secondary)]" role="status" aria-live="polite">Loading…</div> : <div key={activeTab} className="pt-4 sm:pt-8">
-        {activeTab === "study" ? <StudyView state={state} update={update} /> : activeTab === "mock" ? <MockView state={state} update={update} /> : activeTab === "errors" ? <MistakesView state={state} update={update} /> : <ProgressView state={state} update={update} />}
+        {activeTab === "study" ? <StudyView state={state} update={update} /> : activeTab === "mock" ? <MockView state={state} update={update} /> : activeTab === "errors" ? <MistakesView state={state} update={update} /> : activeTab === "progress" ? <ProgressView state={state} update={update} /> : <SettingsView state={state} update={update} />}
       </div>}
       <footer className="hidden border-t border-[var(--separator)] pt-4 text-[12px] text-[var(--secondary)] sm:flex sm:justify-between">
         <span>Official CCSE 2026 question bank</span>
@@ -56,7 +57,6 @@ export default function AppShell() {
           <span aria-hidden="true" className="text-lg leading-none">{icon}</span>
           <span>{label}</span>
         </Link>)}
-        <SettingsPanel navItem />
       </div>
     </nav>
     <SplashScreen />
