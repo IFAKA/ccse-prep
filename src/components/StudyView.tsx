@@ -148,7 +148,7 @@ export default function StudyView({
         }
       />
 
-      <SurfaceCard className="mt-7 p-4 sm:mt-9 sm:p-6">
+      <SurfaceCard className="mt-3 p-4 sm:mt-9 sm:p-6">
         <h2 className="max-w-2xl text-[25px] font-semibold leading-[1.2] tracking-[-0.02em] sm:text-[32px]">
           {question.question}
         </h2>
