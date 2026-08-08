@@ -126,7 +126,7 @@ export default function StudyView({
   };
 
   return (
-    <section className="view-enter py-7 sm:py-10">
+    <section className="view-enter">
       <PageHeader
         eyebrow="Study"
         title={`Task ${question.task} · Question ${question.id}`}

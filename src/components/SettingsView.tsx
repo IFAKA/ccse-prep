@@ -33,7 +33,7 @@ export default function SettingsView({ state, update }: { state: AppState; updat
     location.reload();
   };
 
-  return <section className="view-enter py-7 sm:py-10">
+  return <section className="view-enter">
     <PageHeader eyebrow="Settings" title="Make it yours." description="Simple preferences for a focused, local-first study desk." />
 
     <div className="mt-8 grid gap-8">

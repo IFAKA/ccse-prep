@@ -49,7 +49,7 @@ export default function MockView({ state, update }: { state: AppState; update: (
   };
 
   if (result) {
-    return <section className="view-enter py-7 sm:py-10">
+    return <section className="view-enter">
       <PageHeader eyebrow="Mock complete" title={`${result.score}/25`} description={`${result.score >= 15 ? "Aprobado" : "Sigue entrenando"} · threshold 15/25`} />
       <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
         {Object.entries(result.taskBreakdown).map(([task, value]) => <StatCard key={task} label={`Task ${task}`} value={`${value.correct}/${value.total}`} />)}
@@ -59,7 +59,7 @@ export default function MockView({ state, update }: { state: AppState; update: (
   }
 
   if (!active) {
-    return <section className="view-enter py-7 sm:py-10">
+    return <section className="view-enter">
       <PageHeader eyebrow="Exam simulation" title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
       <button onClick={start} className="focus-ring mt-8 min-h-12 rounded-xl bg-[var(--label)] px-7 font-semibold text-[var(--surface)]">Start Mock</button>
     </section>;
@@ -69,7 +69,7 @@ export default function MockView({ state, update }: { state: AppState; update: (
   const remaining = Math.max(0, 45 * 60 - Math.floor((now - started) / 1000));
   const optionKeys = Object.keys(question.options) as AnswerKey[];
 
-  return <section className="view-enter py-7 sm:py-10">
+  return <section className="view-enter">
     <div className="flex items-center justify-between"><SectionHeading>Mock · {index + 1}/25</SectionHeading><p className="text-sm font-semibold tabular-nums" aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</p></div>
     <SurfaceCard className="mt-7 p-5 sm:p-7">
       <p className="text-[13px] text-[var(--secondary)]">Task {question.task}</p>
