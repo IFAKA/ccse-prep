@@ -10,6 +10,63 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader, SurfaceCard } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
+import { motion, useReducedMotion } from "motion/react";
+
+function QuestionCounter({ value }: { value: number }) {
+  const reduceMotion = useReducedMotion();
+  const [transition, setTransition] = useState({
+    from: value,
+    to: value,
+    direction: "up" as "up" | "down",
+  });
+
+  useEffect(() => {
+    setTransition((current) =>
+      current.to === value
+        ? current
+        : {
+            from: current.to,
+            to: value,
+            direction: value >= current.to ? "up" : "down",
+          },
+    );
+  }, [value]);
+
+  const fromDigits = String(transition.from).padStart(4, "0");
+  const toDigits = String(transition.to).padStart(4, "0");
+  const isMoving = transition.from !== transition.to;
+
+  return (
+    <span className="question-counter inline-flex items-baseline" aria-label={`Question ${value}`}>
+      <span aria-hidden="true">Question&nbsp;</span>
+      <span className="inline-flex tabular-nums" aria-hidden="true">
+        {toDigits.split("").map((digit, index) => {
+          const fromDigit = fromDigits[index];
+          const key = `${transition.from}-${transition.to}-${index}`;
+
+          if (!isMoving || reduceMotion) {
+            return <span className="question-counter-digit" key={key}>{digit}</span>;
+          }
+
+          const goingUp = transition.direction === "up";
+          return (
+            <span className="question-counter-digit" key={key}>
+              <motion.span
+                className="question-counter-track"
+                initial={{ transform: goingUp ? "translateY(0%)" : "translateY(-50%)" }}
+                animate={{ transform: goingUp ? "translateY(-50%)" : "translateY(0%)" }}
+                transition={{ duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
+              >
+                {goingUp ? <span>{fromDigit}</span> : <span>{digit}</span>}
+                {goingUp ? <span>{digit}</span> : <span>{fromDigit}</span>}
+              </motion.span>
+            </span>
+          );
+        })}
+      </span>
+    </span>
+  );
+}
 
 const taskLabels: Record<Task, { compact: string; full: string }> = {
   1: { compact: "Government & Civic Life", full: "Government, legislation and citizen participation" },
@@ -144,7 +201,7 @@ export default function StudyView({
   return (
     <section className="view-enter pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PageHeader
-        title={`Question ${question.id}`}
+        title={<QuestionCounter value={question.id} />}
         titleMeta={
           <span className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold ${taskPillStyles[question.task]}`} aria-label={taskLabels[question.task].full}>
             <span className="sm:hidden">{taskLabels[question.task].compact}</span>

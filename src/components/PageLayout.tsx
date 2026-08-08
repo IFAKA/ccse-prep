@@ -6,7 +6,7 @@ export function PageHeader({
   description,
   aside,
 }: {
-  title: string;
+  title: ReactNode;
   titleMeta?: ReactNode;
   description?: string;
   aside?: ReactNode;
