@@ -8,6 +8,7 @@ import { appendEvent } from "@/lib/storage";
 import { grade, selectNext } from "@/lib/scheduler";
 import type { AppState } from "@/lib/types";
 import { MockExplanationProvider } from "@/lib/ai";
+import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 
 export default function StudyView({
   state,
@@ -24,6 +25,7 @@ export default function StudyView({
   const [startedAt, setStartedAt] = useState(Date.now());
   const [why, setWhy] = useState(false);
   const [explanation, setExplanation] = useState("");
+  const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const provider = useMemo(() => new MockExplanationProvider(), []);
 
@@ -49,6 +51,7 @@ export default function StudyView({
     setSubmitted(false);
     setWhy(false);
     setExplanation("");
+    setAiStatus("");
     setStartedAt(Date.now());
   }, [question.id, state.questionStates]);
 
@@ -91,6 +94,36 @@ export default function StudyView({
         manualChunks: chunksForQuestion(question.task).map((chunk) => chunk.text),
       })
       .then((result) => setExplanation(result.text));
+  };
+
+  const askExternalAi = async () => {
+    const prompt = buildExternalAiPrompt({
+      question,
+      selectedAnswer: selected,
+      manualChunks: chunksForQuestion(question.task),
+    });
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `CCSE 2026 · Question ${question.id}`,
+          text: prompt,
+        });
+        setAiStatus("Prompt shared. Choose ChatGPT or another AI app.");
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(prompt);
+        setAiStatus("Full prompt copied. Paste it into ChatGPT or another AI app.");
+      } else {
+        setAiStatus("Sharing is unavailable in this browser. Select and copy the prompt from a supported browser.");
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+
+      setAiStatus("Could not share automatically. Use the copy fallback in your browser.");
+    }
   };
 
   return (
@@ -170,6 +203,21 @@ export default function StudyView({
               >
                 Why?
               </button>
+            )}
+            <button
+              type="button"
+              onClick={askExternalAi}
+              className="focus-ring mt-3 block min-h-11 text-left text-[15px] font-semibold text-[var(--tint)]"
+            >
+              Ask AI With Full Context
+            </button>
+            <p className="mt-2 text-[12px] leading-relaxed text-[var(--secondary)]">
+              Opens your Android share menu so you can choose ChatGPT or another AI app.
+            </p>
+            {aiStatus && (
+              <p className="mt-2 text-[13px] text-[var(--secondary)]" aria-live="polite">
+                {aiStatus}
+              </p>
             )}
           </div>
         )}
