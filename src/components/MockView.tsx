@@ -1,20 +1,83 @@
 "use client";
-import {useEffect,useState} from "react";
-import {questions,type AnswerKey,type Task} from "@/data/questions";
-import {makeEvent,reduceEvent} from "@/lib/events";
-import {appendEvent} from "@/lib/storage";
-import type {AppState,MockResult} from "@/lib/types";
 
-const composition:Record<Task,number>={1:10,2:3,3:2,4:3,5:7};
-function makeMock(){return [1,2,3,4,5].flatMap(t=>questions.filter(q=>q.task===t).sort(()=>Math.random()-.5).slice(0,composition[t as Task]));}
+import { useEffect, useState } from "react";
+import { questions, type AnswerKey, type Task } from "@/data/questions";
+import { makeEvent, reduceEvent } from "@/lib/events";
+import { appendEvent } from "@/lib/storage";
+import type { AppState, MockResult } from "@/lib/types";
+import { PageHeader, SectionHeading, StatCard, SurfaceCard } from "./PageLayout";
 
-export default function MockView({state,update}:{state:AppState;update:(s:AppState)=>void}){
-  const [active,setActive]=useState(false);const [started,setStarted]=useState(0);const [now,setNow]=useState(Date.now());const [index,setIndex]=useState(0);const [answers,setAnswers]=useState<Record<number,AnswerKey>>({});const [result,setResult]=useState<MockResult>();const [mock,setMock]=useState(makeMock);
-  useEffect(()=>{if(!active)return;const timer=window.setInterval(()=>setNow(Date.now()),1000);return()=>window.clearInterval(timer)},[active]);
-  const start=()=>{setMock(makeMock());setActive(true);setStarted(Date.now());setNow(Date.now());setIndex(0);setAnswers({});setResult(undefined)};
-  const finish=()=>{const breakdown={} as Record<Task,{correct:number;total:number}>;const mistakes:number[]=[];for(const task of [1,2,3,4,5] as Task[]){const xs=mock.filter(q=>q.task===task);breakdown[task]={total:xs.length,correct:xs.filter(q=>answers[q.id]===q.answer).length};xs.filter(q=>answers[q.id]!==q.answer).forEach(q=>mistakes.push(q.id))}const r:MockResult={id:crypto.randomUUID(),timestamp:Date.now(),score:Object.values(breakdown).reduce((n,x)=>n+x.correct,0),taskBreakdown:breakdown,mistakes,durationMs:Date.now()-started};const e=makeEvent("MOCK_COMPLETED",{result:r});appendEvent(e);update(reduceEvent(state,e));setResult(r);setActive(false)};
-  if(result)return <section className="py-10"><p className="text-xs font-semibold uppercase tracking-[.18em] text-[var(--tint)]">Mock Complete</p><h2 className="mt-3 text-5xl font-bold tracking-tight">{result.score}<span className="text-2xl text-[var(--secondary)]">/25</span></h2><p className="mt-2 text-lg">{result.score>=15?'Aprobado':'Sigue entrenando'} · threshold 15/25</p><div className="mt-7 grid grid-cols-5 gap-2">{Object.entries(result.taskBreakdown).map(([t,v])=><div key={t} className="rounded-2xl border border-[var(--separator)] bg-[var(--surface)] p-3 text-center shadow-sm"><b className="text-xs">T{t}</b><strong className="mt-2 block text-xl tabular-nums">{v.correct}/{v.total}</strong></div>)}</div><button onClick={start} className="focus-ring mt-8 min-h-12 rounded-xl bg-[var(--label)] px-6 font-semibold text-[var(--surface)]">New Mock</button></section>;
-  if(!active)return <section className="py-10"><p className="text-xs font-semibold uppercase tracking-[.18em] text-[var(--tint)]">Exam Simulation</p><h2 className="mt-3 max-w-xl text-4xl font-bold tracking-tight sm:text-6xl">25 questions.<br/>45 quiet minutes.</h2><p className="mt-5 max-w-lg text-lg leading-relaxed text-[var(--secondary)]">Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper.</p><button onClick={start} className="focus-ring mt-8 min-h-12 rounded-xl bg-[var(--label)] px-7 font-semibold text-[var(--surface)]">Start Mock</button></section>;
-  const q=mock[index];const remaining=Math.max(0,45*60-Math.floor((now-started)/1000));const optionKeys=Object.keys(q.options) as AnswerKey[];
-  return <section className="py-7"><div className="flex justify-between"><p className="text-xs font-semibold uppercase tracking-widest text-[var(--tint)]">Mock · {index+1}/25</p><p className="text-sm font-semibold tabular-nums" aria-label="Time remaining">{Math.floor(remaining/60)}:{String(remaining%60).padStart(2,'0')}</p></div><div className="mt-8 rounded-2xl border border-[var(--separator)] bg-[var(--surface)] p-5 shadow-sm sm:p-7"><p className="text-[13px] text-[var(--secondary)]">Task {q.task}</p><h2 className="mt-3 text-2xl font-semibold leading-tight sm:text-4xl">{q.question}</h2><div className="mt-8 grid gap-3" role="group" aria-label="Answer choices">{optionKeys.map(a=><button key={a} onClick={()=>setAnswers({...answers,[q.id]:a})} aria-pressed={answers[q.id]===a} className={`focus-ring flex min-h-14 gap-4 rounded-xl border p-4 text-left ${answers[q.id]===a?'border-[var(--tint)] bg-[color:var(--tint)/.1]':'border-[var(--separator)]'}`}><b className="uppercase">{a}</b>{q.options[a]}</button>)}</div></div><div className="mt-5 flex gap-3"><button disabled={!index} onClick={()=>setIndex(index-1)} className="focus-ring min-h-12 rounded-xl border border-[var(--separator)] px-5 font-semibold">Back</button>{index===24?<button onClick={finish} className="focus-ring min-h-12 flex-1 rounded-xl bg-[var(--label)] px-5 font-semibold text-[var(--surface)]">Hand In</button>:<button onClick={()=>setIndex(index+1)} className="focus-ring min-h-12 flex-1 rounded-xl bg-[var(--label)] px-5 font-semibold text-[var(--surface)]">Next</button>}</div></section>;
+const composition: Record<Task, number> = { 1: 10, 2: 3, 3: 2, 4: 3, 5: 7 };
+
+function makeMock() {
+  return [1, 2, 3, 4, 5].flatMap((task) =>
+    questions.filter((question) => question.task === task).sort(() => Math.random() - 0.5).slice(0, composition[task as Task]),
+  );
+}
+
+export default function MockView({ state, update }: { state: AppState; update: (state: AppState) => void }) {
+  const [active, setActive] = useState(false);
+  const [started, setStarted] = useState(0);
+  const [now, setNow] = useState(Date.now());
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, AnswerKey>>({});
+  const [result, setResult] = useState<MockResult>();
+  const [mock, setMock] = useState(makeMock);
+
+  useEffect(() => {
+    if (!active) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [active]);
+
+  const start = () => {
+    setMock(makeMock()); setActive(true); setStarted(Date.now()); setNow(Date.now());
+    setIndex(0); setAnswers({}); setResult(undefined);
+  };
+
+  const finish = () => {
+    const breakdown = {} as Record<Task, { correct: number; total: number }>;
+    const mistakes: number[] = [];
+    for (const task of [1, 2, 3, 4, 5] as Task[]) {
+      const taskQuestions = mock.filter((question) => question.task === task);
+      breakdown[task] = { total: taskQuestions.length, correct: taskQuestions.filter((question) => answers[question.id] === question.answer).length };
+      taskQuestions.filter((question) => answers[question.id] !== question.answer).forEach((question) => mistakes.push(question.id));
+    }
+    const nextResult: MockResult = { id: crypto.randomUUID(), timestamp: Date.now(), score: Object.values(breakdown).reduce((total, item) => total + item.correct, 0), taskBreakdown: breakdown, mistakes, durationMs: Date.now() - started };
+    const event = makeEvent("MOCK_COMPLETED", { result: nextResult });
+    appendEvent(event); update(reduceEvent(state, event)); setResult(nextResult); setActive(false);
+  };
+
+  if (result) {
+    return <section className="view-enter py-7 sm:py-10">
+      <PageHeader eyebrow="Mock complete" title={`${result.score}/25`} description={`${result.score >= 15 ? "Aprobado" : "Sigue entrenando"} · threshold 15/25`} />
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
+        {Object.entries(result.taskBreakdown).map(([task, value]) => <StatCard key={task} label={`Task ${task}`} value={`${value.correct}/${value.total}`} />)}
+      </div>
+      <button onClick={start} className="focus-ring mt-8 min-h-12 rounded-xl bg-[var(--label)] px-6 font-semibold text-[var(--surface)]">New Mock</button>
+    </section>;
+  }
+
+  if (!active) {
+    return <section className="view-enter py-7 sm:py-10">
+      <PageHeader eyebrow="Exam simulation" title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
+      <button onClick={start} className="focus-ring mt-8 min-h-12 rounded-xl bg-[var(--label)] px-7 font-semibold text-[var(--surface)]">Start Mock</button>
+    </section>;
+  }
+
+  const question = mock[index];
+  const remaining = Math.max(0, 45 * 60 - Math.floor((now - started) / 1000));
+  const optionKeys = Object.keys(question.options) as AnswerKey[];
+
+  return <section className="view-enter py-7 sm:py-10">
+    <div className="flex items-center justify-between"><SectionHeading>Mock · {index + 1}/25</SectionHeading><p className="text-sm font-semibold tabular-nums" aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</p></div>
+    <SurfaceCard className="mt-7 p-5 sm:p-7">
+      <p className="text-[13px] text-[var(--secondary)]">Task {question.task}</p>
+      <h2 className="mt-3 text-2xl font-semibold leading-tight sm:text-4xl">{question.question}</h2>
+      <div className="mt-8 grid gap-3" role="group" aria-label="Answer choices">
+        {optionKeys.map((answer) => <button key={answer} onClick={() => setAnswers({ ...answers, [question.id]: answer })} aria-pressed={answers[question.id] === answer} className={`focus-ring flex min-h-14 gap-4 rounded-xl border p-4 text-left ${answers[question.id] === answer ? "border-[var(--tint)] bg-[color:var(--tint)/.1]" : "border-[var(--separator)]"}`}><b className="uppercase">{answer}</b>{question.options[answer]}</button>)}
+      </div>
+    </SurfaceCard>
+    <div className="mt-5 flex gap-3"><button disabled={!index} onClick={() => setIndex(index - 1)} className="focus-ring min-h-12 rounded-xl border border-[var(--separator)] px-5 font-semibold">Back</button>{index === 24 ? <button onClick={finish} className="focus-ring min-h-12 flex-1 rounded-xl bg-[var(--label)] px-5 font-semibold text-[var(--surface)]">Hand In</button> : <button onClick={() => setIndex(index + 1)} className="focus-ring min-h-12 flex-1 rounded-xl bg-[var(--label)] px-5 font-semibold text-[var(--surface)]">Next</button>}</div>
+  </section>;
 }

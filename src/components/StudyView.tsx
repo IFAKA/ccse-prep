@@ -8,6 +8,8 @@ import { appendEvent } from "@/lib/storage";
 import { grade, selectNext } from "@/lib/scheduler";
 import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
+import { PageHeader, SurfaceCard } from "./PageLayout";
+import { playUiSound } from "@/lib/sound";
 
 export default function StudyView({
   state,
@@ -47,6 +49,7 @@ export default function StudyView({
     appendEvent(event);
     update(reduceEvent(state, event));
     setSubmitted(true);
+    playUiSound(grade(question, selected) ? "correct" : "incorrect");
   }, [question, selected, startedAt, state, submitted, update]);
 
   const next = useCallback(() => {
@@ -123,20 +126,18 @@ export default function StudyView({
   };
 
   return (
-    <section className="py-5 sm:py-8">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <p className="text-[15px] font-semibold text-[var(--tint)]">Study</p>
-          <p className="mt-1 text-[13px] text-[var(--secondary)]">
-            Task {question.task} · Question {question.id}
-          </p>
-        </div>
-        <span className="rounded-full bg-[var(--surface-2)] px-3 py-1 text-[12px] font-medium text-[var(--secondary)]">
-          {state.questionStates[question.id]?.status ?? "unseen"}
-        </span>
-      </div>
+    <section className="view-enter py-7 sm:py-10">
+      <PageHeader
+        eyebrow="Study"
+        title={`Task ${question.task} · Question ${question.id}`}
+        aside={
+          <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--secondary)]">
+            {state.questionStates[question.id]?.status ?? "unseen"}
+          </span>
+        }
+      />
 
-      <div className="rounded-2xl border border-[var(--separator)] bg-[var(--surface)] p-4 sm:p-6">
+      <SurfaceCard className="mt-7 p-4 sm:mt-9 sm:p-6">
         <h2 className="max-w-2xl text-[25px] font-semibold leading-[1.2] tracking-[-0.02em] sm:text-[32px]">
           {question.question}
         </h2>
@@ -153,7 +154,7 @@ export default function StudyView({
                 type="button"
                 disabled={submitted}
                 aria-pressed={isSelected}
-                onClick={() => setSelected(key)}
+                onClick={(event) => { setSelected(key); if (event.detail > 0) playUiSound("select"); }}
                 className={`focus-ring flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 text-left text-[16px] transition-colors ${
                   isSelected && !submitted
                     ? "border-[var(--tint)] bg-[color:var(--tint)/.1]"
@@ -207,7 +208,7 @@ export default function StudyView({
             )}
           </div>
         )}
-      </div>
+      </SurfaceCard>
 
       <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-10 mt-4 sm:bottom-3">
         <div className="rounded-2xl border border-[var(--separator)] bg-[color:var(--bg)/.92] p-1.5 backdrop-blur-xl">
