@@ -19,6 +19,14 @@ const taskLabels: Record<Task, { compact: string; full: string }> = {
   5: { compact: "Spanish Society", full: "Spanish society" },
 };
 
+const taskPillStyles: Record<Task, string> = {
+  1: "border-[#ff9f0a]/40 bg-[#ff9f0a]/15 text-[#b86b00]",
+  2: "border-[#af52de]/40 bg-[#af52de]/15 text-[#a33bcf]",
+  3: "border-[#0a84ff]/40 bg-[#0a84ff]/15 text-[#006edb]",
+  4: "border-[#30d158]/40 bg-[#30d158]/15 text-[#168b36]",
+  5: "border-[#ff375f]/40 bg-[#ff375f]/15 text-[#d71f45]",
+};
+
 export default function StudyView({
   state,
   update,
@@ -136,11 +144,13 @@ export default function StudyView({
   return (
     <section className="view-enter pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PageHeader
-        eyebrow={<span aria-label={taskLabels[question.task].full}>
-          <span className="sm:hidden">{taskLabels[question.task].compact}</span>
-          <span className="hidden sm:inline">{taskLabels[question.task].full}</span>
-        </span>}
         title={`Question ${question.id}`}
+        titleMeta={
+          <span className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold ${taskPillStyles[question.task]}`} aria-label={taskLabels[question.task].full}>
+            <span className="sm:hidden">{taskLabels[question.task].compact}</span>
+            <span className="hidden sm:inline">{taskLabels[question.task].full}</span>
+          </span>
+        }
         aside={
           <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--secondary)]">
             {state.questionStates[question.id]?.status ?? "unseen"}
