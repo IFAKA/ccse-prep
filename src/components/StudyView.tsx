@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { questions, type AnswerKey, type Question } from "@/data/questions";
 import { chunksForQuestion } from "@/data/manualKnowledge";
 import { makeEvent, reduceEvent } from "@/lib/events";
 import { appendEvent } from "@/lib/storage";
 import { grade, selectNext } from "@/lib/scheduler";
 import type { AppState } from "@/lib/types";
-import { MockExplanationProvider } from "@/lib/ai";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 
 export default function StudyView({
@@ -23,11 +22,8 @@ export default function StudyView({
   const [selected, setSelected] = useState<AnswerKey>();
   const [submitted, setSubmitted] = useState(false);
   const [startedAt, setStartedAt] = useState(Date.now());
-  const [why, setWhy] = useState(false);
-  const [explanation, setExplanation] = useState("");
   const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
-  const provider = useMemo(() => new MockExplanationProvider(), []);
 
   const submit = useCallback(() => {
     if (!selected || submitted) return;
@@ -49,8 +45,6 @@ export default function StudyView({
     );
     setSelected(undefined);
     setSubmitted(false);
-    setWhy(false);
-    setExplanation("");
     setAiStatus("");
     setStartedAt(Date.now());
   }, [question.id, state.questionStates]);
@@ -83,18 +77,6 @@ export default function StudyView({
 
   const correct = submitted && selected ? grade(question, selected) : false;
   const optionKeys = Object.keys(question.options) as AnswerKey[];
-
-  const explain = () => {
-    setWhy(true);
-    provider
-      .explain({
-        question,
-        officialAnswer: question.answer,
-        selectedAnswer: selected,
-        manualChunks: chunksForQuestion(question.task).map((chunk) => chunk.text),
-      })
-      .then((result) => setExplanation(result.text));
-  };
 
   const askExternalAi = async () => {
     const prompt = buildExternalAiPrompt({
@@ -194,16 +176,6 @@ export default function StudyView({
             <p className="mt-1 text-[14px] text-[var(--secondary)]">
               Official answer: <span className="font-semibold uppercase text-[var(--label)]">{question.answer}</span>
             </p>
-            {why && <p className="mt-3 text-[14px] leading-relaxed">{explanation}</p>}
-            {!why && (
-              <button
-                type="button"
-                onClick={explain}
-                className="focus-ring mt-3 min-h-11 text-[15px] font-semibold text-[var(--tint)]"
-              >
-                Why?
-              </button>
-            )}
             <button
               type="button"
               onClick={askExternalAi}
