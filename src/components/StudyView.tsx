@@ -194,18 +194,6 @@ export default function StudyView({
         }
       />
 
-      <section className="daily-goal" data-complete={dailyGoal.complete ? "true" : "false"} aria-label="Daily study progress">
-        <p aria-live="polite">
-          <strong>Today</strong>
-          <span aria-label={`${dailyGoal.answered} of ${dailyGoal.target} questions answered`}>
-            {dailyGoal.answered}/{dailyGoal.target}
-          </span>
-          <span>Streak {dailyGoal.streak}d</span>
-          <span>Exam {daysUntilExam()}d</span>
-        </p>
-        <progress value={dailyGoal.answered} max={dailyGoal.target} aria-label="Daily study progress" />
-      </section>
-
       <section className="nf-stack">
         <form className="nf-form">
           <fieldset className="nf-field">
@@ -257,6 +245,17 @@ export default function StudyView({
             </div>
           </section>
         )}
+
+        <p
+          className="daily-goal"
+          data-complete={dailyGoal.complete ? "true" : "false"}
+          aria-label="Daily study progress"
+          aria-live="polite"
+        >
+          <strong>Today {dailyGoal.answered}/{dailyGoal.target}</strong>
+          <span>Streak {dailyGoal.streak}d</span>
+          <span>Exam {daysUntilExam()}d</span>
+        </p>
 
       </section>
 
