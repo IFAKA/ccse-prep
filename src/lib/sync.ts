@@ -2,8 +2,10 @@ import type { AppEvent } from "./types";
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 const ALLOWED_TYPES = new Set<AppEvent["type"]>(["ANSWER_RECORDED", "MOCK_COMPLETED", "MISCONCEPTION_UPDATED"]);
-export type SyncPayload = { protocol: "ccse-sync-v1"; sessionId: string; role: "offer" | "answer"; description: RTCSessionDescriptionInit };
+export type SyncPayload = { protocol: "ccse-sync-v2"; sessionId: string; role: "offer" | "answer"; description: RTCSessionDescriptionInit };
 export type SyncEventMessage = { protocol: "ccse-sync-v1"; type: "events"; events: AppEvent[] };
+
+type CompactSyncPayload = [sessionId: string, role: "o" | "a", sdp: string];
 
 export function validateSyncEvents(value: unknown): AppEvent[] {
   if (!Array.isArray(value) || value.length > 10000) throw new Error("Invalid sync event list");
@@ -24,16 +26,30 @@ export function validateSyncEvents(value: unknown): AppEvent[] {
 function parsePayload(value: string): SyncPayload {
   let parsed: unknown;
   try {
-    if (!value.startsWith("ccse-sync-v1.")) throw new Error("Pairing code is not compressed");
-    const compressed = value.slice("ccse-sync-v1.".length);
+    if (!value.startsWith("ccse-sync-v2.")) throw new Error("Pairing code is not compressed");
+    const compressed = value.slice("ccse-sync-v2.".length);
     const decoded = decompressFromEncodedURIComponent(compressed);
     if (!decoded) throw new Error("Pairing code is empty");
     parsed = JSON.parse(decoded);
   } catch { throw new Error("Pairing code is not valid"); }
-  if (!parsed || typeof parsed !== "object") throw new Error("Invalid pairing code");
-  const payload = parsed as Partial<SyncPayload>;
-  if (payload.protocol !== "ccse-sync-v1" || typeof payload.sessionId !== "string" || !payload.description) throw new Error("Unsupported pairing code");
-  return payload as SyncPayload;
+  if (Array.isArray(parsed)) {
+    if (parsed.length !== 3 || typeof parsed[0] !== "string" || (parsed[1] !== "o" && parsed[1] !== "a") || typeof parsed[2] !== "string") {
+      throw new Error("Invalid pairing code");
+    }
+    return {
+      protocol: "ccse-sync-v2",
+      sessionId: parsed[0],
+      role: parsed[1] === "o" ? "offer" : "answer",
+      description: { type: parsed[1] === "o" ? "offer" : "answer", sdp: parsed[2] },
+    };
+  }
+  throw new Error("Invalid pairing code");
+}
+
+function createSessionId() {
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (byte) => byte.toString(36).padStart(2, "0")).join("");
 }
 
 async function waitForIce(peer: RTCPeerConnection) {
@@ -47,7 +63,10 @@ async function waitForIce(peer: RTCPeerConnection) {
 }
 
 function makePayload(sessionId: string, role: SyncPayload["role"], peer: RTCPeerConnection): string {
-  return `ccse-sync-v1.${compressToEncodedURIComponent(JSON.stringify({ protocol: "ccse-sync-v1", sessionId, role, description: peer.localDescription }))}`;
+  const description = peer.localDescription;
+  if (!description?.sdp) throw new Error("Could not create a session description");
+  const compact: CompactSyncPayload = [sessionId, role === "offer" ? "o" : "a", description.sdp];
+  return `ccse-sync-v2.${compressToEncodedURIComponent(JSON.stringify(compact))}`;
 }
 
 function bindChannel(channel: RTCDataChannel, events: AppEvent[], onEvents: (events: AppEvent[]) => void) {
@@ -65,7 +84,7 @@ export type JoinSession = { answerCode: string; close: () => void };
 
 export async function createHostSession(localEvents: AppEvent[], onEvents: (events: AppEvent[]) => void): Promise<HostSession> {
   const peer = new RTCPeerConnection({ iceServers: [] });
-  const sessionId = crypto.randomUUID();
+  const sessionId = createSessionId();
   bindChannel(peer.createDataChannel("ccse-events"), localEvents, onEvents);
   await peer.setLocalDescription(await peer.createOffer());
   await waitForIce(peer);
