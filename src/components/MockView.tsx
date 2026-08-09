@@ -5,7 +5,7 @@ import { questions, type AnswerKey, type Task } from "@/data/questions";
 import { makeEvent, reduceEvent } from "@/lib/events";
 import { appendEvent } from "@/lib/storage";
 import type { AppState, MockResult } from "@/lib/types";
-import { PageHeader, SectionHeading, StatCard, SurfaceCard } from "./PageLayout";
+import { PageHeader } from "./PageLayout";
 
 const composition: Record<Task, number> = { 1: 10, 2: 3, 3: 2, 4: 3, 5: 7 };
 
@@ -51,17 +51,17 @@ export default function MockView({ state, update }: { state: AppState; update: (
   if (result) {
     return <section className="view-enter">
       <PageHeader title={`${result.score}/25`} description={`${result.score >= 15 ? "Aprobado" : "Sigue entrenando"} · threshold 15/25`} />
-      <div className="page-section grid grid-cols-2 gap-3 sm:grid-cols-5">
-        {Object.entries(result.taskBreakdown).map(([task, value]) => <StatCard key={task} label={`Task ${task}`} value={`${value.correct}/${value.total}`} />)}
-      </div>
-      <button onClick={start} className="page-section focus-ring min-h-12 rounded-xl bg-[var(--label)] px-6 font-semibold text-[var(--surface)]">New Mock</button>
+      <dl>
+        {Object.entries(result.taskBreakdown).map(([task, value]) => <div key={task}><dt>Task {task}</dt><dd><strong>{value.correct}/{value.total}</strong></dd></div>)}
+      </dl>
+      <button type="button" onClick={start}>New Mock</button>
     </section>;
   }
 
   if (!active) {
     return <section className="view-enter">
       <PageHeader title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
-      <button onClick={start} className="page-section focus-ring min-h-12 rounded-xl bg-[var(--label)] px-7 font-semibold text-[var(--surface)]">Start Mock</button>
+      <button type="button" onClick={start}>Start Mock</button>
     </section>;
   }
 
@@ -70,14 +70,25 @@ export default function MockView({ state, update }: { state: AppState; update: (
   const optionKeys = Object.keys(question.options) as AnswerKey[];
 
   return <section className="view-enter">
-    <div className="flex items-center justify-between"><SectionHeading>Mock · {index + 1}/25</SectionHeading><p className="text-sm font-semibold tabular-nums" aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</p></div>
-    <SurfaceCard className="page-section p-4 sm:p-6">
-      <p className="text-[13px] text-[var(--secondary)]">Task {question.task}</p>
-      <h2 className="mt-3 text-2xl font-semibold leading-tight sm:text-4xl">{question.question}</h2>
-      <div className="mt-6 grid gap-3" role="group" aria-label="Answer choices">
-        {optionKeys.map((answer) => <button key={answer} onClick={() => setAnswers({ ...answers, [question.id]: answer })} aria-pressed={answers[question.id] === answer} className={`focus-ring flex min-h-14 gap-4 rounded-xl border p-4 text-left ${answers[question.id] === answer ? "border-[var(--tint)] bg-[color:var(--tint)/.1]" : "border-[var(--separator)]"}`}><b className="uppercase">{answer}</b>{question.options[answer]}</button>)}
-      </div>
-    </SurfaceCard>
-    <div className="mt-5 flex gap-3 sm:mt-6"><button disabled={!index} onClick={() => setIndex(index - 1)} className="focus-ring min-h-12 rounded-xl border border-[var(--separator)] px-5 font-semibold">Back</button>{index === 24 ? <button onClick={finish} className="focus-ring min-h-12 flex-1 rounded-xl bg-[var(--label)] px-5 font-semibold text-[var(--surface)]">Hand In</button> : <button onClick={() => setIndex(index + 1)} className="focus-ring min-h-12 flex-1 rounded-xl bg-[var(--label)] px-5 font-semibold text-[var(--surface)]">Next</button>}</div>
+    <header><h2>Mock · {index + 1}/25</h2><p><strong aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</strong></p></header>
+    <section>
+      <p>Task {question.task}</p>
+      <fieldset>
+        <legend>{question.question}</legend>
+        <div className="answers">
+          {optionKeys.map((answer) => <label key={answer} className="answer">
+            <input
+              type="radio"
+              name={`mock-question-${question.id}`}
+              value={answer}
+              checked={answers[question.id] === answer}
+              onChange={() => setAnswers({ ...answers, [question.id]: answer })}
+            />
+            <span>{question.options[answer]}</span>
+          </label>)}
+        </div>
+      </fieldset>
+    </section>
+    <footer><button type="button" disabled={!index} onClick={() => setIndex(index - 1)}>Back</button>{index === 24 ? <button type="button" onClick={finish}>Hand In</button> : <button type="button" onClick={() => setIndex(index + 1)}>Next</button>}</footer>
   </section>;
 }

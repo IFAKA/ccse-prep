@@ -1,17 +1,106 @@
 "use client";
-import {useEffect, useState} from "react";
-import type {AppEvent, AppState} from "@/lib/types";
-import {createHostSession, createJoinSession, type HostSession, type JoinSession} from "@/lib/sync";
-import {mergeEvents} from "@/lib/storage";
+
+import { useEffect, useState } from "react";
+import type { AppEvent, AppState } from "@/lib/types";
+import { createHostSession, createJoinSession, type HostSession, type JoinSession } from "@/lib/sync";
+import { mergeEvents } from "@/lib/storage";
 
 type Mode = "idle" | "host" | "join";
-export default function SyncPanel({state,update}:{state:AppState;update:(state:AppState)=>void}) {
-  const [mode,setMode]=useState<Mode>("idle"); const [code,setCode]=useState(""); const [answer,setAnswer]=useState(""); const [message,setMessage]=useState(""); const [session,setSession]=useState<HostSession|JoinSession>();
-  useEffect(()=>()=>session?.close(),[session]);
-  const received=async(events:AppEvent[])=>{const before=state.events.length;const next=await mergeEvents(events);update(next);setMessage(`${Math.max(0,next.events.length-before)} new events received. Study history merged.`)};
-  const host=async()=>{try{const next=await createHostSession(state.events,received);setSession(next);setCode(next.pairingCode);setMode("host");setMessage("Copy this offer to the other device. Paste its answer below.")}catch(err){setMessage(err instanceof Error?err.message:"Could not start sync")}};
-  const join=async()=>{try{const next=await createJoinSession(code,state.events,received);setSession(next);setAnswer(next.answerCode);setMode("join");setMessage("Copy this answer back to the device that created the session.")}catch(err){setMessage(err instanceof Error?err.message:"Could not join sync")}};
-  const finish=async()=>{if(!session||mode!=="host"||!("applyAnswer" in session))return;try{await session.applyAnswer(answer);setMessage("Answer accepted. Waiting for the devices to connect…")}catch(err){setMessage(err instanceof Error?err.message:"Could not accept answer")}};
-  const close=()=>{session?.close();setSession(undefined);setMode("idle");setCode("");setAnswer("");};
-  return <section className="rounded-2xl border border-[var(--separator)] bg-[var(--surface)] p-4 shadow-sm sm:p-6" aria-labelledby="sync-title"><div className="flex items-start justify-between gap-4"><div><h3 id="sync-title" className="text-[17px] font-semibold">Sync nearby</h3><p className="mt-1 text-[14px] text-[var(--secondary)]">One-time local transfer. No account or cloud database.</p></div>{mode!=="idle"&&<button className="focus-ring min-h-11 rounded-lg px-3 py-2 text-[14px] text-[var(--tint)]" onClick={close}>Close</button>}</div>{mode==="idle"&&<><button className="focus-ring mt-5 min-h-12 w-full rounded-xl bg-[var(--tint)] px-4 font-semibold text-white" onClick={host}>Create sync session</button><button className="focus-ring mt-3 min-h-12 w-full rounded-xl border border-[var(--separator)] px-4 font-semibold" onClick={()=>setMode("join")}>Join with a code</button></>}{mode==="host"&&<div className="mt-5 grid gap-4"><label className="text-[13px] font-medium">Offer code<textarea aria-label="Offer code" className="focus-ring mt-2 min-h-28 w-full rounded-xl border border-[var(--separator)] bg-[var(--surface-2)] p-3 text-[12px]" readOnly value={code}/></label><label className="text-[13px] font-medium">Answer from other device<textarea aria-label="Answer from other device" className="focus-ring mt-2 min-h-24 w-full rounded-xl border border-[var(--separator)] bg-[var(--surface-2)] p-3 text-[12px]" value={answer} onChange={e=>setAnswer(e.target.value)} placeholder="Paste answer here…"/></label><button className="focus-ring min-h-12 rounded-xl bg-[var(--tint)] px-4 font-semibold text-white disabled:opacity-40" disabled={!answer} onClick={finish}>Connect devices</button></div>}{mode==="join"&&<div className="mt-5 grid gap-4"><label className="text-[13px] font-medium">Offer from other device<textarea aria-label="Offer from other device" className="focus-ring mt-2 min-h-28 w-full rounded-xl border border-[var(--separator)] bg-[var(--surface-2)] p-3 text-[12px]" value={code} onChange={e=>setCode(e.target.value)} placeholder="Paste offer here…"/></label><button className="focus-ring min-h-12 rounded-xl bg-[var(--tint)] px-4 font-semibold text-white disabled:opacity-40" disabled={!code} onClick={join}>Create answer</button>{answer&&<label className="text-[13px] font-medium">Answer code<textarea aria-label="Answer code" className="focus-ring mt-2 min-h-28 w-full rounded-xl border border-[var(--separator)] bg-[var(--surface-2)] p-3 text-[12px]" readOnly value={answer}/></label>}</div>}{message&&<p className="mt-5 rounded-xl bg-[var(--surface-2)] p-3 text-[13px] text-[var(--secondary)]" role="status" aria-live="polite">{message}</p>}</section>;
+
+export default function SyncPanel({ state, update }: { state: AppState; update: (state: AppState) => void }) {
+  const [mode, setMode] = useState<Mode>("idle");
+  const [code, setCode] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [message, setMessage] = useState("");
+  const [session, setSession] = useState<HostSession | JoinSession>();
+
+  useEffect(() => () => session?.close(), [session]);
+
+  const received = async (events: AppEvent[]) => {
+    const before = state.events.length;
+    const next = await mergeEvents(events);
+    update(next);
+    setMessage(`${Math.max(0, next.events.length - before)} new events received. Study history merged.`);
+  };
+
+  const host = async () => {
+    try {
+      const next = await createHostSession(state.events, received);
+      setSession(next);
+      setCode(next.pairingCode);
+      setMode("host");
+      setMessage("Copy this offer to the other device. Paste its answer below.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not start sync");
+    }
+  };
+
+  const join = async () => {
+    try {
+      const next = await createJoinSession(code, state.events, received);
+      setSession(next);
+      setAnswer(next.answerCode);
+      setMode("join");
+      setMessage("Copy this answer back to the device that created the session.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not join sync");
+    }
+  };
+
+  const finish = async () => {
+    if (!session || mode !== "host" || !("applyAnswer" in session)) return;
+    try {
+      await session.applyAnswer(answer);
+      setMessage("Answer accepted. Waiting for the devices to connect…");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not accept answer");
+    }
+  };
+
+  const close = () => {
+    session?.close();
+    setSession(undefined);
+    setMode("idle");
+    setCode("");
+    setAnswer("");
+  };
+
+  return (
+    <section>
+      <header>
+        <div>
+          <h2>Sync nearby</h2>
+          <p>One-time local transfer. No account or cloud database.</p>
+        </div>
+        {mode !== "idle" && <button type="button" onClick={close}>Close</button>}
+      </header>
+
+      {mode === "idle" && (
+        <div>
+          <div className="action-group">
+            <button type="button" onClick={host}>Create sync session</button>
+            <button type="button" onClick={() => setMode("join")}>Join with a code</button>
+          </div>
+        </div>
+      )}
+
+      {mode === "host" && (
+        <form onSubmit={(event) => { event.preventDefault(); void finish(); }}>
+          <label>Offer code<textarea readOnly value={code} /></label>
+          <label>Answer from other device<textarea value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Paste answer here…" /></label>
+          <button type="submit" disabled={!answer}>Connect devices</button>
+        </form>
+      )}
+
+      {mode === "join" && (
+        <form onSubmit={(event) => { event.preventDefault(); void join(); }}>
+          <label>Offer from other device<textarea value={code} onChange={(event) => setCode(event.target.value)} placeholder="Paste offer here…" /></label>
+          <button type="submit" disabled={!code}>Create answer</button>
+          {answer && <label>Answer code<textarea readOnly value={answer} /></label>}
+        </form>
+      )}
+
+      {message && <p role="status" aria-live="polite">{message}</p>}
+    </section>
+  );
 }

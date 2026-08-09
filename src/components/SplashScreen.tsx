@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CCSEMark from "./CCSEMark";
-
 const splashSeenKey = "ccse-prep:splash-seen";
 
 function shouldShowSplash() {
@@ -24,7 +22,6 @@ export default function SplashScreen() {
   if (!visible) return null;
   return <div className="splash-screen" role="status" aria-label="CCSE Prep 2026" aria-live="polite">
     <div className="splash-lockup">
-      <div className="splash-mark-wrap"><CCSEMark animated className="h-14 w-14" /></div>
       <div className="splash-wordmark">CCSE Prep <span>2026</span></div>
       <p className="splash-caption">Preparación oficial · Local-first</p>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { questions, type AnswerKey, type Question, type Task } from "@/data/questions";
 import { chunksForQuestion } from "@/data/manualKnowledge";
 import { makeEvent, reduceEvent } from "@/lib/events";
@@ -8,7 +8,7 @@ import { appendEvent } from "@/lib/storage";
 import { grade, selectNext } from "@/lib/scheduler";
 import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
-import { PageHeader, SurfaceCard } from "./PageLayout";
+import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -41,9 +41,9 @@ function QuestionCounter({ value }: { value: number }) {
     .filter((index) => index !== -1);
 
   return (
-    <span className="question-counter inline-flex items-baseline" aria-label={`Question ${value}`}>
+    <span className="question-counter" aria-label={`Question ${value}`}>
       <span aria-hidden="true">Question&nbsp;</span>
-      <span className="inline-flex tabular-nums" aria-hidden="true">
+      <span className="counter-digits" aria-hidden="true">
         {toDigits.split("").map((digit, index) => {
           const fromDigit = fromDigits[index];
           const key = `${transition.from}-${transition.to}-${index}`;
@@ -83,14 +83,6 @@ const taskLabels: Record<Task, { compact: string; full: string }> = {
   5: { compact: "Spanish Society", full: "Spanish society" },
 };
 
-const taskPillStyles: Record<Task, string> = {
-  1: "border-[#ff9f0a]/40 bg-[#ff9f0a]/15 text-[#b86b00]",
-  2: "border-[#af52de]/40 bg-[#af52de]/15 text-[#a33bcf]",
-  3: "border-[#0a84ff]/40 bg-[#0a84ff]/15 text-[#006edb]",
-  4: "border-[#30d158]/40 bg-[#30d158]/15 text-[#168b36]",
-  5: "border-[#ff375f]/40 bg-[#ff375f]/15 text-[#d71f45]",
-};
-
 export default function StudyView({
   state,
   update,
@@ -107,6 +99,7 @@ export default function StudyView({
   const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [closingShortcuts, setClosingShortcuts] = useState(false);
+  const shortcutsDialog = useRef<HTMLDialogElement>(null);
 
   const closeShortcuts = useCallback(() => {
     if (!showShortcuts || closingShortcuts) return;
@@ -116,6 +109,14 @@ export default function StudyView({
       setClosingShortcuts(false);
     }, 180);
   }, [closingShortcuts, showShortcuts]);
+
+  useEffect(() => {
+    const dialog = shortcutsDialog.current;
+    if (showShortcuts && dialog && !dialog.open) dialog.showModal();
+    return () => {
+      if (!showShortcuts && dialog?.open) dialog.close();
+    };
+  }, [showShortcuts]);
 
   const submit = useCallback(() => {
     if (!selected || submitted) return;
@@ -206,127 +207,106 @@ export default function StudyView({
   };
 
   return (
-    <section className="view-enter pb-[calc(10rem+env(safe-area-inset-bottom))] sm:pb-0">
+    <section className="view-enter study-view">
       <PageHeader
         title={<QuestionCounter value={question.id} />}
         titleMeta={
-          <span className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold ${taskPillStyles[question.task]}`} aria-label={taskLabels[question.task].full}>
-            <span className="sm:hidden">{taskLabels[question.task].compact}</span>
-            <span className="hidden sm:inline">{taskLabels[question.task].full}</span>
+          <span aria-label={taskLabels[question.task].full}>
+            <span>{taskLabels[question.task].compact}</span>
           </span>
         }
         aside={
-          <span className="rounded-full bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--secondary)]">
+          <span>
             {state.questionStates[question.id]?.status ?? "unseen"}
           </span>
         }
       />
 
-      <SurfaceCard className="page-section p-4 sm:p-6">
-        <h2 className="max-w-2xl text-[25px] font-semibold leading-[1.2] tracking-[-0.02em] sm:text-[32px]">
-          {question.question}
-        </h2>
+      <section>
+        <fieldset>
+          <legend>{question.question}</legend>
 
-        <div className="mt-6 grid gap-3" role="group" aria-label="Answer choices">
+          <div className="answers">
           {optionKeys.map((key) => {
             const isSelected = selected === key;
             const isOfficial = submitted && key === question.answer;
             const isWrong = submitted && isSelected && !isOfficial;
 
             return (
-              <button
+              <label
                 key={key}
-                type="button"
-                disabled={submitted}
-                aria-pressed={isSelected}
-                onClick={(event) => { setSelected(key); if (event.detail > 0) playUiSound("select"); }}
-                className={`focus-ring flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 text-left text-[16px] transition-colors ${
-                  isSelected && !submitted
-                    ? "border-[var(--tint)] bg-[color:var(--tint)/.1]"
-                    : "border-[var(--separator)] bg-[var(--surface)]"
-                } ${
+                className={`answer ${
                   isOfficial
-                    ? "border-[var(--success)] bg-[color:var(--success)/.12]"
+                    ? "is-correct"
                     : isWrong
-                      ? "border-[var(--danger)] bg-[color:var(--danger)/.1]"
+                      ? "is-wrong"
                       : ""
-                } disabled:cursor-default`}
+                }`}
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--surface-2)] text-[13px] font-semibold uppercase text-[var(--label)]">
-                  {key}
-                </span>
-                <span className="leading-snug">{question.options[key]}</span>
-              </button>
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  value={key}
+                  checked={isSelected}
+                  disabled={submitted}
+                  onChange={() => { setSelected(key); playUiSound("select"); }}
+                />
+                <span>{question.options[key]}</span>
+              </label>
             );
           })}
-        </div>
+          </div>
+        </fieldset>
 
         {submitted && (
-          <div
-            className={`answer-feedback mt-5 rounded-xl border p-4 ${
+          <section
+            className={`feedback ${
               correct
-                ? "border-[var(--success)] bg-[color:var(--success)/.1]"
-                : "border-[var(--danger)] bg-[color:var(--danger)/.1]"
+                ? "is-correct"
+                : "is-wrong"
             }`}
+            aria-label="Answer feedback"
             aria-live="polite"
           >
-            <p className="text-[15px] font-semibold">
-              {correct ? "Correct" : "Not quite"}
-            </p>
-            <p className="mt-1 text-[14px] text-[var(--secondary)]">
-              Official answer: <span className="font-semibold uppercase text-[var(--label)]">{question.answer}</span>
-            </p>
-            <button
-              type="button"
-              onClick={askExternalAi}
-              className="focus-ring mt-3 block min-h-11 text-left text-[15px] font-semibold text-[var(--tint)]"
-            >
-              Ask AI With Full Context
-            </button>
-            <p className="mt-2 text-[12px] leading-relaxed text-[var(--secondary)]">
-              Opens your Android share menu so you can choose ChatGPT or another AI app.
-            </p>
-            {aiStatus && (
-              <p className="mt-2 text-[13px] text-[var(--secondary)]" aria-live="polite">
-                {aiStatus}
-              </p>
-            )}
-          </div>
-        )}
-      </SurfaceCard>
+            <div className="feedback-summary">
+              <p><strong>{correct ? "Correct" : "Not quite"}</strong></p>
+              <p>Official answer: <strong>{question.answer}</strong></p>
+            </div>
 
-      <div className="mobile-action-bar fixed inset-x-0 bottom-0 z-10 mt-4 bg-[color:var(--bg)/.82] px-4 pt-3 backdrop-blur-xl sm:sticky sm:bottom-3 sm:bg-transparent sm:px-0 sm:pt-0 sm:backdrop-blur-none">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-[var(--separator)] bg-[color:var(--bg)/.92] p-1.5 backdrop-blur-xl sm:mx-0">
+            <div className="feedback-help">
+              <button type="button" onClick={askExternalAi}>
+                Ask AI With Full Context
+              </button>
+              <p>Opens your Android share menu so you can choose ChatGPT or another AI app.</p>
+              {aiStatus && <p aria-live="polite">{aiStatus}</p>}
+            </div>
+          </section>
+        )}
+      </section>
+
+      <footer>
           <button
             type="button"
             onClick={submitted ? next : submit}
             disabled={!selected}
-            className="focus-ring min-h-14 w-full rounded-xl bg-[var(--tint)] px-5 text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
           >
             {submitted ? "Continue" : "Check"}
           </button>
-        </div>
-      </div>
+      </footer>
 
       {showShortcuts && (
-        <div className={`shortcut-backdrop fixed inset-0 z-30 flex items-end p-4 sm:items-center sm:justify-center ${closingShortcuts ? "is-closing" : ""}`}>
-          <div className={`shortcut-dialog w-full max-w-sm rounded-2xl bg-[var(--surface)] p-5 shadow-xl ${closingShortcuts ? "is-closing" : ""}`} role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
-            <div className="flex items-center justify-between">
-              <h3 id="shortcuts-title" className="text-[17px] font-semibold">Keyboard Shortcuts</h3>
-              <button
-                type="button"
-                onClick={closeShortcuts}
-                className="focus-ring min-h-11 min-w-11 rounded-full text-xl text-[var(--secondary)]"
-                aria-label="Close shortcuts"
-              >
-                ×
-              </button>
-            </div>
-            <p className="mt-4 text-[15px] leading-7 text-[var(--secondary)]">
-              1 / 2 / 3 or A / B / C to answer. Enter or Space to check and continue.
-            </p>
-          </div>
-        </div>
+        <dialog
+          ref={shortcutsDialog}
+          className={`shortcut-dialog ${closingShortcuts ? "is-closing" : ""}`}
+          aria-labelledby="shortcuts-title"
+          onCancel={(event) => { event.preventDefault(); closeShortcuts(); }}
+        >
+          <header className="dialog-header">
+            <h3 id="shortcuts-title">Keyboard Shortcuts</h3>
+            <button type="button" onClick={closeShortcuts}>Close</button>
+          </header>
+          <p>1 / 2 / 3 or A / B / C to answer. Enter or Space to check and continue.</p>
+        </dialog>
       )}
     </section>
   );

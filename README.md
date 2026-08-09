@@ -1,4 +1,4 @@
-# CCSE Desk 2026
+# CCSE Prep 2026
 
 Offline-first study app for the 300 official CCSE 2026 questions.
 

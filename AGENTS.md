@@ -1,5 +1,7 @@
 # CCSE Desk UI Rules
 
+Use `$native-first-ui` for all interface work. Use `$emil-design-eng` when evaluating polish, interaction details, or motion. Keep the native-first architecture: semantic HTML first, minimal reusable CSS second, JavaScript only for behavior native HTML cannot provide.
+
 - Follow the Vercel Web Interface Guidelines in `https://vercel.com/design/guidelines`.
 - Keep controls keyboard-operable, show `:focus-visible`, and use at least 44px mobile hit targets.
 - Use native semantic controls before ARIA, label every form control, and announce async status with `aria-live`.

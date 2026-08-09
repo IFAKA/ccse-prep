@@ -16,12 +16,10 @@ export default function SoundToggle() {
   return (
     <button
       type="button"
-      className="focus-ring sound-toggle rounded-lg px-2 py-2 text-[13px] text-[var(--secondary)]"
       aria-pressed={enabled}
       aria-label={`${enabled ? "Mute" : "Enable"} sound effects`}
       onClick={toggle}
     >
-      <span aria-hidden="true" className="mr-1.5">{enabled ? "⌁" : "×"}</span>
       Sound {enabled ? "On" : "Off"}
     </button>
   );

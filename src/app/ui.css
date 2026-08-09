@@ -1,0 +1,236 @@
+/* CCSE-specific application styles. Reusable contracts live in core.css. */
+
+@layer components {
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: Canvas;
+  color: CanvasText;
+  text-align: center;
+}
+
+.splash-wordmark {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 700;
+}
+
+.splash-caption {
+  margin-top: 0.5rem;
+}
+
+.view-enter > header,
+.view-enter section > header,
+.view-enter > footer {
+  justify-content: space-between;
+}
+
+.answers {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.question-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.counter-digits {
+  display: inline-flex;
+}
+
+.question-counter-digit {
+  display: inline-block;
+  width: 0.62em;
+  height: 1.05em;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.question-counter-track {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.question-counter-track > span {
+  display: block;
+  height: 1.05em;
+}
+
+.answer,
+.filter-group label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.answer input,
+.filter-group input {
+  margin-top: 0.35rem;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 1rem;
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li + li {
+  margin-top: 0.75rem;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1.5rem;
+}
+
+.preview-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+}
+
+.preview-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.preview-list article {
+  padding-block: 0.75rem;
+  border-top: 1px solid currentColor;
+}
+
+.preview-list article header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.feedback {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 1rem;
+}
+
+.feedback-summary,
+.feedback-help {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.feedback-help {
+  gap: 0.5rem;
+}
+
+.feedback-help button {
+  justify-self: start;
+}
+
+.action-group input[type="file"] {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.file-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: min(100%, 15rem);
+  padding: 0.75rem;
+  border: 1px dashed currentColor;
+  cursor: pointer;
+}
+
+.scalability-metrics dl {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+
+.scalability-long-text,
+.scalability-lab strong {
+  overflow-wrap: anywhere;
+}
+
+.scalability-form select {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+}
+
+.scalability-form fieldset {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.scalability-table-wrap {
+  overflow-x: auto;
+}
+
+.scalability-scroll-note {
+  font-size: 0.875rem;
+}
+
+.scalability-table-wrap:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 0.25rem;
+}
+
+.scalability-table-wrap table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+}
+
+.scalability-table-wrap th,
+.scalability-table-wrap td {
+  padding: 0.75rem;
+  border: 1px solid currentColor;
+  text-align: start;
+}
+
+.conformance-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.conformance-check {
+  padding: 1rem;
+  border: 1px solid currentColor;
+}
+
+.conformance-check header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.conformance-check[data-status="pass"] {
+  border-style: solid;
+}
+
+@media (min-width: 48rem) {
+  .view-enter > header,
+  .view-enter section > header,
+  .setting-row {
+    align-items: center;
+    flex-direction: row;
+  }
+}
+
+}
