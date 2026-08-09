@@ -197,7 +197,7 @@ export default function StudyView({
         }
       />
 
-      <section>
+      <section className="nf-stack">
         <form className="nf-form">
           <fieldset className="nf-field">
             <legend>{question.question}</legend>
@@ -218,6 +218,7 @@ export default function StudyView({
                   disabled={submitted}
                   onChange={() => { setSelected(key); playUiSound("select"); }}
                 />
+                <span className="study-option-letter" aria-hidden="true">{key.toUpperCase()}.</span>
                 <span>{question.options[key]}</span>
               </label>
             );
@@ -234,7 +235,7 @@ export default function StudyView({
           >
             <div className="nf-stack">
               <p><strong>{correct ? "Correct" : "Not quite"}</strong></p>
-              <p>Official answer: <strong>{question.answer}</strong></p>
+              <p>Official answer: <strong>{question.answer.toUpperCase()}</strong></p>
             </div>
 
             <div className="nf-stack">
@@ -254,7 +255,7 @@ export default function StudyView({
         )}
       </section>
 
-      <footer className="study-actions">
+      <footer className="study-actions nf-mobile-actions">
           <button className="nf-button-primary"
             type="button"
             onClick={submitted ? next : submit}

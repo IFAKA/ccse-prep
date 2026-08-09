@@ -1,5 +1,11 @@
 @layer patterns {
   .study-actions { position: sticky; inset-block-end: 0; z-index: 2; display: flex; justify-content: flex-end; margin-block-start: var(--nf-space-4); padding: var(--nf-space-3) max(var(--nf-space-2), env(safe-area-inset-right)) max(var(--nf-space-3), env(safe-area-inset-bottom)) max(var(--nf-space-2), env(safe-area-inset-left)); border-block-start: var(--nf-border-width) solid var(--nf-color-border); background: color-mix(in srgb, var(--nf-color-background) 92%, transparent); backdrop-filter: blur(8px); }
+  .study-option-letter { flex: 0 0 1.5rem; font-weight: 700; color: var(--nf-color-muted); }
+  @media (max-width: 55.99rem) {
+    .study-actions { flex-direction: column; align-items: stretch; }
+    .study-actions > button { inline-size: 100%; }
+  }
+  @media (min-width: 56rem) { .study-actions > button { inline-size: auto; } }
 }
 
 @layer components {
