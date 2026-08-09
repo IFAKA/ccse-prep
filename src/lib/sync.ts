@@ -24,14 +24,11 @@ export function validateSyncEvents(value: unknown): AppEvent[] {
 function parsePayload(value: string): SyncPayload {
   let parsed: unknown;
   try {
-    if (value.startsWith("ccse-sync-v1.")) {
-      const compressed = value.slice("ccse-sync-v1.".length);
-      const decoded = decompressFromEncodedURIComponent(compressed);
-      if (!decoded) throw new Error("Pairing code is empty");
-      parsed = JSON.parse(decoded);
-    } else {
-      parsed = JSON.parse(value);
-    }
+    if (!value.startsWith("ccse-sync-v1.")) throw new Error("Pairing code is not compressed");
+    const compressed = value.slice("ccse-sync-v1.".length);
+    const decoded = decompressFromEncodedURIComponent(compressed);
+    if (!decoded) throw new Error("Pairing code is empty");
+    parsed = JSON.parse(decoded);
   } catch { throw new Error("Pairing code is not valid"); }
   if (!parsed || typeof parsed !== "object") throw new Error("Invalid pairing code");
   const payload = parsed as Partial<SyncPayload>;
