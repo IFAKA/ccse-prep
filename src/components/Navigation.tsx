@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { enhanceNativeInteractions } from "@/app/native-first-ui/behavior";
 
 type NavigationItem = {
@@ -26,13 +25,12 @@ function NavigationItems({ items, pathname }: { items: NavigationItem[]; pathnam
       <div>
         <NavigationItems items={item.children} pathname={pathname} />
       </div>
-    </details> : <Link key={item.href} href={item.href ?? "#"} aria-current={item.href === pathname ? "page" : undefined}>{item.label}</Link>)}
+    </details> : <a key={item.href} href={item.href ?? "#"} aria-current={item.href === pathname ? "page" : undefined}>{item.label}</a>)}
   </>;
 }
 
 export default function Navigation() {
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     enhanceNativeInteractions();
@@ -42,7 +40,7 @@ export default function Navigation() {
     <nav className="nf-navigation nf-navigation-desktop" aria-label="Main navigation">
       <NavigationItems items={navigationItems} pathname={pathname} />
     </nav>
-    <details className="nf-navigation nf-navigation-mobile" open={mobileMenuOpen} onToggle={(event) => setMobileMenuOpen(event.currentTarget.open)}>
+    <details className="nf-navigation nf-navigation-mobile">
       <summary>Menu</summary>
       <nav data-menu-content aria-label="Mobile navigation">
         <NavigationItems items={navigationItems} pathname={pathname} />

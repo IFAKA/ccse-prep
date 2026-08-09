@@ -1,4 +1,4 @@
-const CACHE = 'ccse-prep-v3';
+const CACHE = 'ccse-prep-v4';
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['/', '/manifest.webmanifest'])));

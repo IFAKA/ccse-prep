@@ -46,6 +46,12 @@ function closeSoon(root) {
   state.close = setTimeout(() => closeMenus(root), 180);
 }
 
+function closeResponsiveNavigation(root, target) {
+  root.querySelectorAll(".nf-navigation-mobile[open]").forEach((navigation) => {
+    if (!navigation.contains(target)) navigation.removeAttribute("open");
+  });
+}
+
 export function enhanceNativeInteractions(root = document) {
   if (initializedRoots.has(root)) return;
   initializedRoots.add(root);
@@ -91,11 +97,20 @@ export function enhanceNativeInteractions(root = document) {
       else openMenu(root, trigger);
       return;
     }
-    if (!target.closest(".nf-navigation")) closeMenus(root);
+    if (!target.closest(".nf-navigation")) {
+      closeMenus(root);
+      closeResponsiveNavigation(root, target);
+    }
   });
 
   root.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      const responsiveNavigation = root.querySelector(".nf-navigation-mobile[open]");
+      if (responsiveNavigation) {
+        responsiveNavigation.removeAttribute("open");
+        responsiveNavigation.querySelector("summary")?.focus();
+        return;
+      }
       const open = [...menus(root)].filter((menu) => !menu.hidden).at(-1);
       if (!open) return;
       event.preventDefault();
