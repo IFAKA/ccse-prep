@@ -22,8 +22,9 @@ export default function AppShell() {
   useEffect(() => {
     loadState().then((nextState) => {
       setState(nextState);
-      setReady(true);
-    });
+    }).catch(() => {
+      setState(blankState());
+    }).finally(() => setReady(true));
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
   }, []);
 

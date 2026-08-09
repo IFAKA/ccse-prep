@@ -1,7 +1,56 @@
 import type {AppEvent,AppState} from "./types"; import {blankState,reduceEvents} from "./events"; import {validateSyncEvents} from "./sync";
 const DB="ccse-2026", STORE="events";
-export async function loadState():Promise<AppState>{ if(typeof indexedDB==="undefined") return blankState(); return new Promise(resolve=>{const req=indexedDB.open(DB,1);req.onupgradeneeded=()=>req.result.createObjectStore(STORE,{keyPath:"eventId"});req.onsuccess=()=>{const db=req.result;const tx=db.transaction(STORE,"readonly");const get=tx.objectStore(STORE).getAll();get.onsuccess=()=>{db.close();resolve(reduceEvents(get.result as AppEvent[]))};get.onerror=()=>{db.close();resolve(blankState())}};req.onerror=()=>resolve(blankState())}) }
-export async function appendEvent(event:AppEvent){if(typeof indexedDB==="undefined")return;await new Promise<void>((resolve,reject)=>{const req=indexedDB.open(DB,1);req.onsuccess=()=>{const db=req.result;const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(event);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>{db.close();reject(tx.error)}};req.onerror=()=>reject(req.error)})}
+
+function openDatabase(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(STORE, {keyPath: "eventId"});
+    req.onblocked = () => reject(new Error("IndexedDB open blocked"));
+    req.onerror = () => reject(req.error ?? new Error("IndexedDB open failed"));
+    req.onsuccess = () => {
+      const db = req.result;
+      db.onversionchange = () => db.close();
+      resolve(db);
+    };
+  });
+}
+
+export async function loadState(): Promise<AppState> {
+  if (typeof indexedDB === "undefined") return blankState();
+
+  try {
+    const db = await openDatabase();
+    return await new Promise((resolve) => {
+      let settled = false;
+      const finish = (state: AppState) => {
+        if (settled) return;
+        settled = true;
+        db.close();
+        resolve(state);
+      };
+
+      try {
+        const tx = db.transaction(STORE, "readonly");
+        const get = tx.objectStore(STORE).getAll();
+        get.onsuccess = () => {
+          try {
+            finish(reduceEvents(get.result as AppEvent[]));
+          } catch {
+            finish(blankState());
+          }
+        };
+        get.onerror = () => finish(blankState());
+        tx.onabort = () => finish(blankState());
+      } catch {
+        finish(blankState());
+      }
+    });
+  } catch {
+    return blankState();
+  }
+}
+
+export async function appendEvent(event:AppEvent){if(typeof indexedDB==="undefined")return;await new Promise<void>((resolve,reject)=>{openDatabase().then(db=>{try{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(event);tx.oncomplete=()=>{db.close();resolve()};tx.onabort=()=>{db.close();reject(tx.error??new Error("IndexedDB transaction aborted"))};tx.onerror=()=>{db.close();reject(tx.error??new Error("IndexedDB transaction failed"))}}catch(error){db.close();reject(error)}}).catch(reject)})}
 export async function exportState(){const state=await loadState();return JSON.stringify({schemaVersion:state.schemaVersion,events:state.events},null,2)}
 export async function importState(json:string){const parsed=JSON.parse(json);if(!parsed||!Array.isArray(parsed.events))throw new Error("Invalid CCSE export");for(const e of validateSyncEvents(parsed.events))await appendEvent(e);return loadState()}
 export async function mergeEvents(events:readonly AppEvent[]){for(const event of validateSyncEvents(events))await appendEvent(event);return loadState()}
