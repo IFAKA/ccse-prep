@@ -10,6 +10,7 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
+import { dailyGoalProgress } from "@/lib/dailyGoal";
 
 const SESSION_MINIMUM = 10;
 
@@ -93,6 +94,7 @@ export default function StudyView({
 
   const optionKeys = Object.keys(question.options) as AnswerKey[];
   const sessionComplete = answeredInSession >= SESSION_MINIMUM;
+  const dailyGoal = dailyGoalProgress(state);
   const isEditableTarget = (target: EventTarget | null) => {
     const element = target as HTMLElement | null;
     return Boolean(element?.closest("input, textarea, select, [contenteditable='true']"));
@@ -197,6 +199,31 @@ export default function StudyView({
         }
       />
 
+      <section className="daily-goal" data-complete={dailyGoal.complete ? "true" : "false"} aria-label="Daily study goal">
+        <div className="nf-split">
+          <p><strong>{dailyGoal.complete ? "Daily goal complete" : "Daily goal"}</strong></p>
+          <p aria-label={`${dailyGoal.answered} of ${dailyGoal.target} questions answered today`}>
+            {dailyGoal.answered}/{dailyGoal.target}
+          </p>
+        </div>
+        <progress value={dailyGoal.answered} max={dailyGoal.target} aria-label="Daily goal progress" />
+        <p className="daily-goal-detail" aria-live="polite">
+          {dailyGoal.complete
+            ? "You’ve done enough for today. Keep going if you want more practice."
+            : `${dailyGoal.target - dailyGoal.answered} ${dailyGoal.target - dailyGoal.answered === 1 ? "question" : "questions"} left today.`}
+        </p>
+        {sessionComplete && (
+          <div className="daily-goal-actions">
+            <p><strong>{dailyGoal.complete ? "Daily practice complete" : "Session complete"}</strong></p>
+            <p>You can stop for today or continue for more practice.</p>
+            <div className="nf-cluster">
+              <a className="nf-button" href="/progress">Stop For Today</a>
+              <button className="nf-button-primary" type="button" onClick={next}>Continue</button>
+            </div>
+          </div>
+        )}
+      </section>
+
       <section className="nf-stack">
         <form className="nf-form">
           <fieldset className="nf-field">
@@ -249,12 +276,6 @@ export default function StudyView({
           </section>
         )}
 
-        {sessionComplete && (
-          <section className="nf-alert" data-tone="success" aria-live="polite">
-            <p><strong>Session complete</strong></p>
-            <p>You’ve answered {SESSION_MINIMUM} questions. Continue for more practice.</p>
-          </section>
-        )}
       </section>
 
       <footer className="study-actions nf-mobile-actions nf-viewport-actions">
