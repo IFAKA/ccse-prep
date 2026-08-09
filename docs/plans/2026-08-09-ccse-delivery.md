@@ -4,9 +4,9 @@
 
 **Goal:** Finish the CCSE 2026 phone/PWA tutor, add reliable nearby one-shot sync, improve public discoverability, publish the project to GitHub, and deploy it to Vercel.
 
-**Architecture:** Keep all user data local-first as an append-only event log in IndexedDB. Nearby sync will exchange event JSON over a WebRTC data channel after a manual QR offer/answer pairing; merging remains deterministic by event ID and the existing reducer. Vercel will host only the static Next.js app and will not persist study data.
+**Architecture:** Keep all user data local-first as an append-only event log in IndexedDB. Nearby sync will exchange event JSON over a direct WebRTC data channel after a temporary six-digit signaling exchange; merging remains deterministic by event ID and the existing reducer. The signaling endpoint stores only connection metadata for a short TTL and never stores study data.
 
-**Tech Stack:** Next.js App Router, TypeScript, Tailwind CSS, IndexedDB, WebRTC DataChannel, QR-compatible pairing payloads, Vitest, Playwright, GitHub CLI, Vercel CLI.
+**Tech Stack:** Next.js App Router, TypeScript, IndexedDB, WebRTC DataChannel, temporary numeric signaling endpoint, Vitest, Playwright, GitHub CLI, Vercel CLI.
 
 ---
 
@@ -38,7 +38,7 @@ Steps:
 1. Test event-log validation, event ID deduplication, and deterministic merged reduction.
 2. Implement a browser-only WebRTC session wrapper with offer creation, answer handling, ICE completion, one-time pairing token, and data-channel transfer.
 3. Implement sync payload validation with size limits, schema checks, allowed event types, and clear error messages.
-4. Add a Sync nearby panel with Create session, Join session, copy/paste fallback, QR-compatible text payload, confirmation, transfer progress, imported-event count, and manual export/import fallback.
+4. Add a Sync nearby panel with Create Sync Code, Enter A Code, pairing confirmation, transfer progress, imported-event count, and manual export/import fallback.
 5. Ensure no user data is sent to a server and no official question answer can be changed by sync.
 6. Run tests and build.
 

@@ -34,9 +34,9 @@ npm run build
 
 ## Nearby sync
 
-On the first device, open `Progress → Sync Nearby → Create Sync Session`. Copy the offer code to the second device. On the second device choose `Join With a Code`, paste the offer, and copy the answer back. Paste the answer on the first device and connect. Events merge by unique event ID and the state is rebuilt locally on both devices.
+On the first device, open `Progress → Sync Nearby → Create Sync Code`. Share the six-digit code with the second device. On the second device choose `Enter A Code`, enter the code, and confirm. The devices then connect directly and merge events by unique event ID.
 
-The sync connection is direct and temporary. Vercel hosts the application only; it does not store study history.
+The sync connection is direct and temporary. The signaling endpoint stores only the offer/answer metadata for up to five minutes; it does not store study history.
 
 ## Deployment
 
