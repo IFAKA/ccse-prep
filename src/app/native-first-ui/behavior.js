@@ -2,7 +2,8 @@ const initializedRoots = new WeakSet();
 const menuStates = new WeakMap();
 
 function menus(root) {
-  return root.querySelectorAll(".nf-navigation [data-menu-content]");
+  return [...root.querySelectorAll(".nf-navigation [data-menu-content]")]
+    .filter((menu) => !menu.closest(".nf-navigation-mobile"));
 }
 
 function closeMenus(root, except = null) {
