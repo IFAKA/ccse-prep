@@ -11,6 +11,8 @@ import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
 
+const SESSION_MINIMUM = 10;
+
 function QuestionCounter({ value }: { value: number }) {
   return (
     <span className="study-question-number" aria-label={`Question ${value}`}>
@@ -39,6 +41,7 @@ export default function StudyView({
   );
   const [selected, setSelected] = useState<AnswerKey>();
   const [submitted, setSubmitted] = useState(false);
+  const [answeredInSession, setAnsweredInSession] = useState(0);
   const [startedAt, setStartedAt] = useState(Date.now());
   const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -73,6 +76,7 @@ export default function StudyView({
 
     await appendEvent(event);
     update(reduceEvent(state, event));
+    setAnsweredInSession((count) => count + 1);
     setSubmitted(true);
     playUiSound(grade(question, selected) ? "correct" : "incorrect");
   }, [question, selected, startedAt, state, submitted, update]);
@@ -88,6 +92,7 @@ export default function StudyView({
   }, [question.id, state.questionStates]);
 
   const optionKeys = Object.keys(question.options) as AnswerKey[];
+  const sessionComplete = answeredInSession >= SESSION_MINIMUM;
   const isEditableTarget = (target: EventTarget | null) => {
     const element = target as HTMLElement | null;
     return Boolean(element?.closest("input, textarea, select, [contenteditable='true']"));
@@ -239,6 +244,13 @@ export default function StudyView({
               <p>Opens your Android share menu so you can choose ChatGPT or another AI app.</p>
               {aiStatus && <p aria-live="polite">{aiStatus}</p>}
             </div>
+          </section>
+        )}
+
+        {sessionComplete && (
+          <section className="nf-alert" data-tone="success" aria-live="polite">
+            <p><strong>Session complete</strong></p>
+            <p>You’ve answered {SESSION_MINIMUM} questions. Continue for more practice.</p>
           </section>
         )}
       </section>

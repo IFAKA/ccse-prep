@@ -18,7 +18,7 @@ export default function ProgressView({ state, update }: { state: AppState; updat
       aside={<span className="nf-badge" data-tone={progress.ready ? "success" : "danger"}>{progress.ready ? "Ready" : "Not ready yet"}</span>}
     />
     <dl className="nf-grid">
-      <div><dt>Seen</dt><dd><strong>{seen}/300</strong></dd></div>
+      <div><dt>Seen</dt><dd><strong>{seen}</strong></dd></div>
       <div><dt>Mastered</dt><dd><strong>{mastered}</strong></dd></div>
       <div><dt>Weak</dt><dd><strong>{weak}</strong></dd></div>
       <div><dt>Mock avg</dt><dd><strong>{average || "—"}</strong></dd></div>

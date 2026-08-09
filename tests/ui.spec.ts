@@ -7,6 +7,21 @@ test('study question renders and keyboard can select', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Check' })).toBeEnabled();
 });
 
+test('study completes the ten-question minimum and continues indefinitely', async ({ page }) => {
+  await page.goto('/study');
+  await expect(page.getByRole('heading', { name: /Question/ })).toBeVisible();
+
+  for (let index = 0; index < 10; index += 1) {
+    await page.getByRole('radio').first().check();
+    await page.getByRole('button', { name: 'Check' }).click();
+
+    if (index < 9) await page.getByRole('button', { name: 'Continue' }).click();
+  }
+
+  await expect(page.getByText('Session complete')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled();
+});
+
 test('mock composition starts', async ({ page }) => {
   await page.goto('/mock');
   await page.getByRole('button', { name: 'Start Mock' }).click();
