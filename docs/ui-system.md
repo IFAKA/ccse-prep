@@ -5,7 +5,11 @@ This project uses semantic HTML as its public interface. CSS supplies consistent
 The styles are intentionally split into two layers:
 
 - `src/app/native-first-ui/core.css` contains reusable native-first contracts for any application.
-- `src/app/ui.css` contains CCSE-specific screens and can grow without inflating the core layer.
+- The component and pattern files in `src/app/native-first-ui/` contain the shared contracts plus small CCSE adaptations required by this app.
+
+This app currently vendors the native-first layer locally instead of depending on the sibling repository or an npm package. That keeps Vercel builds self-contained and preserves the app's ability to add CCSE-specific behavior without coupling the generic library to this product.
+
+If the system is later published as an npm package, keep the package generic and import its `core.css` here. Keep study-specific selectors such as `.study-*`, `.sync-*`, and `.study-actions` in a separate app stylesheet.
 
 Both desktop and mobile use the same semantic markup and navigation data. The base layout is mobile-first; wider viewports add room with media queries instead of introducing a second component system.
 
