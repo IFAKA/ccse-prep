@@ -1,4 +1,5 @@
 import type { AppEvent } from "./types";
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 const ALLOWED_TYPES = new Set<AppEvent["type"]>(["ANSWER_RECORDED", "MOCK_COMPLETED", "MISCONCEPTION_UPDATED"]);
 export type SyncPayload = { protocol: "ccse-sync-v1"; sessionId: string; role: "offer" | "answer"; description: RTCSessionDescriptionInit };
@@ -22,7 +23,16 @@ export function validateSyncEvents(value: unknown): AppEvent[] {
 
 function parsePayload(value: string): SyncPayload {
   let parsed: unknown;
-  try { parsed = JSON.parse(value); } catch { throw new Error("Pairing code is not valid JSON"); }
+  try {
+    if (value.startsWith("ccse-sync-v1.")) {
+      const compressed = value.slice("ccse-sync-v1.".length);
+      const decoded = decompressFromEncodedURIComponent(compressed);
+      if (!decoded) throw new Error("Pairing code is empty");
+      parsed = JSON.parse(decoded);
+    } else {
+      parsed = JSON.parse(value);
+    }
+  } catch { throw new Error("Pairing code is not valid"); }
   if (!parsed || typeof parsed !== "object") throw new Error("Invalid pairing code");
   const payload = parsed as Partial<SyncPayload>;
   if (payload.protocol !== "ccse-sync-v1" || typeof payload.sessionId !== "string" || !payload.description) throw new Error("Unsupported pairing code");
@@ -40,7 +50,7 @@ async function waitForIce(peer: RTCPeerConnection) {
 }
 
 function makePayload(sessionId: string, role: SyncPayload["role"], peer: RTCPeerConnection): string {
-  return JSON.stringify({ protocol: "ccse-sync-v1", sessionId, role, description: peer.localDescription });
+  return `ccse-sync-v1.${compressToEncodedURIComponent(JSON.stringify({ protocol: "ccse-sync-v1", sessionId, role, description: peer.localDescription }))}`;
 }
 
 function bindChannel(channel: RTCDataChannel, events: AppEvent[], onEvents: (events: AppEvent[]) => void) {

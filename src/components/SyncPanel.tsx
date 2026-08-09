@@ -61,7 +61,7 @@ export default function SyncPanel({ state, update }: { state: AppState; update: 
   const host = async () => {
     try {
       const next = await createHostSession(state.events, received);
-      const nextQrCode = await QRCode.toDataURL(next.pairingCode, { margin: 2, width: 280, errorCorrectionLevel: "M" });
+      const nextQrCode = await QRCode.toDataURL(next.pairingCode, { margin: 2, width: 280, errorCorrectionLevel: "L" });
       setSession(next);
       setCode(next.pairingCode);
       setQrCode(nextQrCode);
@@ -75,7 +75,7 @@ export default function SyncPanel({ state, update }: { state: AppState; update: 
   const join = async () => {
     try {
       const next = await createJoinSession(code, state.events, received);
-      const nextAnswerQrCode = await QRCode.toDataURL(next.answerCode, { margin: 2, width: 280, errorCorrectionLevel: "M" });
+      const nextAnswerQrCode = await QRCode.toDataURL(next.answerCode, { margin: 2, width: 280, errorCorrectionLevel: "L" });
       setSession(next);
       setAnswer(next.answerCode);
       setAnswerQrCode(nextAnswerQrCode);
