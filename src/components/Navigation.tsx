@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { enhanceNativeInteractions } from "@/app/native-first-ui/behavior";
 
 type NavigationItem = {
@@ -32,6 +32,7 @@ function NavigationItems({ items, pathname }: { items: NavigationItem[]; pathnam
 
 export default function Navigation() {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     enhanceNativeInteractions();
@@ -41,7 +42,7 @@ export default function Navigation() {
     <nav className="nf-navigation nf-navigation-desktop" aria-label="Main navigation">
       <NavigationItems items={navigationItems} pathname={pathname} />
     </nav>
-    <details className="nf-navigation nf-navigation-mobile">
+    <details className="nf-navigation nf-navigation-mobile" open={mobileMenuOpen} onToggle={(event) => setMobileMenuOpen(event.currentTarget.open)}>
       <summary>Menu</summary>
       <nav data-menu-content aria-label="Mobile navigation">
         <NavigationItems items={navigationItems} pathname={pathname} />

@@ -1,14 +1,29 @@
 import type {AppEvent,AppState} from "./types"; import {blankState,reduceEvents} from "./events"; import {validateSyncEvents} from "./sync";
 const DB="ccse-2026", STORE="events";
+const OPEN_TIMEOUT_MS = 2000;
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
+    let settled = false;
+    const timer = setTimeout(() => finishReject(new Error("IndexedDB open timed out")), OPEN_TIMEOUT_MS);
+    const finishReject = (error: Error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(error);
+    };
     const req = indexedDB.open(DB, 1);
     req.onupgradeneeded = () => req.result.createObjectStore(STORE, {keyPath: "eventId"});
-    req.onblocked = () => reject(new Error("IndexedDB open blocked"));
-    req.onerror = () => reject(req.error ?? new Error("IndexedDB open failed"));
+    req.onblocked = () => finishReject(new Error("IndexedDB open blocked"));
+    req.onerror = () => finishReject(req.error ?? new Error("IndexedDB open failed"));
     req.onsuccess = () => {
       const db = req.result;
+      if (settled) {
+        db.close();
+        return;
+      }
+      settled = true;
+      clearTimeout(timer);
       db.onversionchange = () => db.close();
       resolve(db);
     };
