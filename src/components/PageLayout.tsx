@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Navigation from "./Navigation";
 
 export function PageHeader({
   title,
@@ -13,18 +14,19 @@ export function PageHeader({
 }) {
   return (
     <header className="nf-page-header">
-      <div>
-        <h1>
-          {title}
-        </h1>
-        {titleMeta && <div>{titleMeta}</div>}
-        {description && (
-          <p>
-            {description}
-          </p>
-        )}
-        {aside && <div>{aside}</div>}
+      <div className="nf-topbar">
+        <div className="nf-page-heading">
+          <h1>{title}</h1>
+          {(titleMeta || aside) && (
+            <div className="nf-page-meta">
+              {titleMeta}
+              {aside}
+            </div>
+          )}
+        </div>
+        <Navigation />
       </div>
+      {description && <p>{description}</p>}
     </header>
   );
 }

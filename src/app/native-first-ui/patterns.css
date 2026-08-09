@@ -1,15 +1,15 @@
 @layer patterns {
   .nf-container { width: min(100% - 2rem, var(--nf-content-width)); margin-inline: auto; }
-  .nf-app-header { display: flex; justify-content: flex-end; padding-block: var(--nf-space-3); }
   .nf-readable { max-width: var(--nf-readable-width); }
   .nf-stack { display: flex; flex-direction: column; gap: var(--nf-space-4); }
   .nf-stack[data-gap="sm"] { gap: var(--nf-space-2); }
   .nf-stack[data-gap="lg"] { gap: var(--nf-space-8); }
   .nf-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-3); }
   .nf-grid { display: grid; align-items: start; gap: var(--nf-space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
-  .nf-page { min-height: 100vh; }
-  .nf-page-header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--nf-space-4); padding-block: var(--nf-space-8) var(--nf-space-6); }
-  .nf-page-header > :first-child { min-width: min(100%, 20rem); }
+  .nf-page-header { display: grid; gap: var(--nf-space-3); padding-block: var(--nf-space-3) var(--nf-space-6); }
+  .nf-topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--nf-space-3); }
+  .nf-page-heading { min-width: 0; }
+  .nf-page-meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-2); margin-block-start: var(--nf-space-2); }
   .nf-sidebar { display: grid; align-items: start; gap: clamp(var(--nf-space-6), 4vw, var(--nf-space-10)); padding-block: var(--nf-space-8) var(--nf-space-10); }
   .nf-sidebar > nav { min-width: 0; position: sticky; top: 1.25rem; align-self: start; }
   .nf-sidebar > nav .nf-navigation { align-items: stretch; }

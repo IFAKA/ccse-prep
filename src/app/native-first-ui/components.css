@@ -79,7 +79,6 @@
   .nf-navigation-desktop { display: flex; }
   .nf-navigation-mobile { display: none; }
   @media (max-width: 55.99rem) {
-    .nf-page-header > :first-child { min-width: 0; }
     .nf-navigation-desktop { display: none; }
     .nf-navigation-mobile { display: block; position: relative; }
     .nf-navigation-mobile > nav[data-menu-content] { inset-block-start: 100%; inset-inline-start: auto; inset-inline-end: 0; max-block-size: calc(100dvh - 6rem); overflow: auto; }

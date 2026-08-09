@@ -4,7 +4,6 @@
 
 @layer components {
   .study-category, .study-status { display: inline-flex; align-items: center; min-height: 1.75rem; max-width: 100%; padding: var(--nf-space-1) var(--nf-space-2); border-radius: var(--nf-radius-pill); font-size: var(--nf-text-sm); font-weight: 650; overflow-wrap: anywhere; }
-  .study-category { margin-block-start: var(--nf-space-2); }
   .study-category[data-task="1"] { background: color-mix(in srgb, var(--nf-color-accent) 14%, transparent); color: var(--nf-color-accent-strong); }
   .study-category[data-task="2"] { background: color-mix(in srgb, var(--nf-color-info) 14%, transparent); color: var(--nf-color-info); }
   .study-category[data-task="3"] { background: color-mix(in srgb, var(--nf-color-success) 14%, transparent); color: var(--nf-color-success); }

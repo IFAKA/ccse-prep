@@ -11,7 +11,6 @@ import ProgressView from "./ProgressView";
 import SettingsView from "./SettingsView";
 import SplashScreen from "./SplashScreen";
 import StudyView from "./StudyView";
-import Navigation from "./Navigation";
 
 export default function AppShell() {
   const pathname = usePathname();
@@ -31,10 +30,6 @@ export default function AppShell() {
   const update = (nextState: AppState) => setState(nextState);
 
   return <>
-    <header className="nf-container nf-app-header">
-      <Navigation />
-    </header>
-
     <main id="main-content" className="nf-page nf-container">
       {!ready ? <div className="nf-loading" role="status" aria-live="polite">Loading…</div> : <div key={pathname}>
         {activeTab === "study" ? <StudyView state={state} update={update} /> : activeTab === "mock" ? <MockView state={state} update={update} /> : activeTab === "errors" ? <MistakesView state={state} update={update} /> : activeTab === "progress" ? <ProgressView state={state} update={update} /> : <SettingsView state={state} update={update} />}
