@@ -6,8 +6,8 @@
   .daily-goal > * { padding: var(--nf-space-1) var(--nf-space-2); }
   .daily-goal > * + * { border-inline-start: var(--nf-border-width) solid var(--nf-color-border); }
   .daily-goal > strong { color: var(--nf-color-text); }
-  .daily-goal[data-complete="true"] { border-color: var(--nf-color-success); }
-  .daily-goal[data-complete="true"] > strong { color: var(--nf-color-success); }
+  .daily-goal[data-complete="true"] { border-color: var(--nf-color-border); }
+  .daily-goal[data-complete="true"] > strong { margin-block: calc(-1 * var(--nf-border-width)); margin-inline-start: calc(-1 * var(--nf-border-width)); border: var(--nf-border-width) solid var(--nf-color-success); border-radius: var(--nf-radius-pill) 0 0 var(--nf-radius-pill); background: color-mix(in srgb, var(--nf-color-success) 14%, var(--nf-color-surface)); color: var(--nf-color-success); }
   @media (max-width: 55.99rem) {
     .study-view { min-block-size: calc(100dvh - var(--nf-space-4)); padding-block-end: calc(5.5rem + env(safe-area-inset-bottom)); }
     .study-question { flex: 1 1 auto; justify-content: center; min-block-size: 0; }
