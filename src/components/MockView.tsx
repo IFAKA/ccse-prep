@@ -74,14 +74,18 @@ export default function MockView({ state, update }: { state: AppState; update: (
         {Object.entries(result.taskBreakdown).map(([task, value]) => <div key={task}><dt>Task {task}</dt><dd><strong>{value.correct}/{value.total}</strong></dd></div>)}
       </dl>
       <section className="nf-section" aria-labelledby="mock-mistakes"><h2 id="mock-mistakes">Mistakes</h2>{result.mistakes.length ? <ul>{result.mistakes.map((id) => <li key={id}>Question {id}</li>)}</ul> : <p>No mistakes.</p>}</section>
-      <button className="nf-button-primary" type="button" onClick={start}>New Mock</button>
+      <footer className="nf-mobile-actions nf-viewport-actions">
+        <button className="nf-button-primary nf-action-button" type="button" onClick={start}>New Mock</button>
+      </footer>
     </section>;
   }
 
   if (!active) {
     return <section className="nf-stack">
       <PageHeader title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
-      <button className="nf-button-primary" type="button" onClick={start}>Start Mock</button>
+      <footer className="nf-mobile-actions nf-viewport-actions">
+        <button className="nf-button-primary nf-action-button" type="button" onClick={start}>Start Mock</button>
+      </footer>
     </section>;
   }
 
@@ -91,6 +95,6 @@ export default function MockView({ state, update }: { state: AppState; update: (
   return <section className="nf-stack">
     <header><h2>Mock · {index + 1}/25</h2><p><strong aria-label="Time remaining">{Math.floor(remaining / 60000)}:{String(Math.floor(remaining / 1000) % 60).padStart(2, "0")}</strong></p></header>
     <section className="nf-section"><p>Task {question.task}</p><fieldset className="nf-field"><legend>{question.question}</legend><div className="nf-choice-list">{optionKeys.map((answer) => <label key={answer}><input type="radio" name={`mock-question-${question.id}`} value={answer} checked={answers[question.id] === answer} onChange={() => setAnswers({ ...answers, [question.id]: answer })} /><span>{question.options[answer]}</span></label>)}</div></fieldset></section>
-    <footer className="study-actions nf-cluster"><button className="nf-button" type="button" disabled={!index} onClick={() => setIndex(index - 1)}>Back</button>{index === 24 ? <button className="nf-button-primary nf-action-button" type="button" onClick={() => void finish()}>Hand In</button> : <button className="nf-button-primary nf-action-button" type="button" onClick={() => setIndex(index + 1)}>Next</button>}</footer>
+    <footer className="study-actions nf-mobile-actions nf-viewport-actions nf-cluster"><button className="nf-button" type="button" disabled={!index} onClick={() => setIndex(index - 1)}>Back</button>{index === 24 ? <button className="nf-button-primary nf-action-button" type="button" onClick={() => void finish()}>Hand In</button> : <button className="nf-button-primary nf-action-button" type="button" onClick={() => setIndex(index + 1)}>Next</button>}</footer>
   </section>;
 }

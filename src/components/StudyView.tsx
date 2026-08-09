@@ -257,7 +257,7 @@ export default function StudyView({
         )}
       </section>
 
-      <footer className="study-actions nf-mobile-actions">
+      <footer className="study-actions nf-mobile-actions nf-viewport-actions">
           <button className="nf-button-primary nf-action-button"
             type="button"
             onClick={submitted ? next : submit}

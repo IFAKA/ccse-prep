@@ -38,7 +38,7 @@
   .nf-alert[data-tone="danger"] { border-color: color-mix(in srgb, var(--nf-color-danger) 40%, var(--nf-color-border)); background: color-mix(in srgb, var(--nf-color-danger) 10%, var(--nf-color-surface)); }
   .nf-form { display: grid; gap: var(--nf-space-5); max-width: 48rem; }
   .nf-choice-list { display: grid; gap: var(--nf-space-2); margin-block-start: var(--nf-space-3); }
-  .nf-choice-list > label { display: flex; align-items: center; gap: var(--nf-space-3); min-block-size: 3.5rem; padding: var(--nf-space-3) var(--nf-space-4); border: var(--nf-border-width) solid var(--nf-color-border); border-radius: var(--nf-radius-md); background: var(--nf-color-surface); font-weight: 500; cursor: pointer; transition: border-color 160ms ease-out, background-color 160ms ease-out, box-shadow 160ms ease-out; }
+  .nf-choice-list > label { display: flex; align-items: center; gap: var(--nf-space-3); min-block-size: 4rem; padding: var(--nf-space-3) var(--nf-space-4); border: var(--nf-border-width) solid var(--nf-color-border); border-radius: var(--nf-radius-md); background: var(--nf-color-surface); font-weight: 500; cursor: pointer; touch-action: manipulation; transition: border-color 160ms ease-out, background-color 160ms ease-out, box-shadow 160ms ease-out; }
   .nf-choice-list > label:hover { border-color: var(--nf-color-accent); background: color-mix(in srgb, var(--nf-color-accent) 6%, var(--nf-color-surface)); }
   .nf-choice-list > label:has(input:checked) { border-color: var(--nf-color-accent); background: color-mix(in srgb, var(--nf-color-accent) 12%, var(--nf-color-surface)); box-shadow: var(--nf-shadow-sm); }
   .nf-choice-list > label:has(input:focus-visible) { outline: 2px solid var(--nf-color-accent); outline-offset: 3px; }
