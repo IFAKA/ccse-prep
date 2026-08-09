@@ -201,7 +201,8 @@ export default function StudyView({
         <form className="nf-form">
           <fieldset className="nf-field">
             <legend>{question.question}</legend>
-          {optionKeys.map((key) => {
+            <div className="nf-choice-list">
+              {optionKeys.map((key) => {
             const isSelected = selected === key;
             const isOfficial = submitted && key === question.answer;
             const isWrong = submitted && isSelected && !isOfficial;
@@ -221,8 +222,9 @@ export default function StudyView({
                 <span className="study-option-letter" aria-hidden="true">{key.toUpperCase()}.</span>
                 <span>{question.options[key]}</span>
               </label>
-            );
-          })}
+              );
+            })}
+            </div>
           </fieldset>
         </form>
 
@@ -256,7 +258,7 @@ export default function StudyView({
       </section>
 
       <footer className="study-actions nf-mobile-actions">
-          <button className="nf-button-primary"
+          <button className="nf-button-primary nf-action-button"
             type="button"
             onClick={submitted ? next : submit}
             disabled={!selected}

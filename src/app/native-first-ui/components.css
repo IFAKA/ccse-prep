@@ -37,6 +37,15 @@
   .nf-alert[data-tone="warning"] { border-color: color-mix(in srgb, var(--nf-color-warning) 40%, var(--nf-color-border)); background: color-mix(in srgb, var(--nf-color-warning) 10%, var(--nf-color-surface)); }
   .nf-alert[data-tone="danger"] { border-color: color-mix(in srgb, var(--nf-color-danger) 40%, var(--nf-color-border)); background: color-mix(in srgb, var(--nf-color-danger) 10%, var(--nf-color-surface)); }
   .nf-form { display: grid; gap: var(--nf-space-5); max-width: 48rem; }
+  .nf-choice-list { display: grid; gap: var(--nf-space-2); margin-block-start: var(--nf-space-3); }
+  .nf-choice-list > label { display: flex; align-items: center; gap: var(--nf-space-3); min-block-size: 3.5rem; padding: var(--nf-space-3) var(--nf-space-4); border: var(--nf-border-width) solid var(--nf-color-border); border-radius: var(--nf-radius-md); background: var(--nf-color-surface); font-weight: 500; cursor: pointer; transition: border-color 160ms ease-out, background-color 160ms ease-out, box-shadow 160ms ease-out; }
+  .nf-choice-list > label:hover { border-color: var(--nf-color-accent); background: color-mix(in srgb, var(--nf-color-accent) 6%, var(--nf-color-surface)); }
+  .nf-choice-list > label:has(input:checked) { border-color: var(--nf-color-accent); background: color-mix(in srgb, var(--nf-color-accent) 12%, var(--nf-color-surface)); box-shadow: var(--nf-shadow-sm); }
+  .nf-choice-list > label:has(input:focus-visible) { outline: 2px solid var(--nf-color-accent); outline-offset: 3px; }
+  .nf-choice-list input[type="radio"] { flex: 0 0 auto; inline-size: 1.25rem; block-size: 1.25rem; margin: 0; accent-color: var(--nf-color-accent); }
+  .nf-action-button { min-block-size: 3.5rem; padding-inline: var(--nf-space-5); font-size: 1.05rem; transition: background-color 160ms ease-out, border-color 160ms ease-out, transform 120ms ease-out; }
+  .nf-action-button:active { transform: scale(0.98); }
+  @media (prefers-reduced-motion: reduce) { .nf-choice-list > label, .nf-action-button { transition: none; } }
   .nf-field { display: grid; gap: var(--nf-space-2); }
   .nf-field > label, .nf-field > legend { font-weight: 650; }
   .nf-form > fieldset.nf-field { display: grid; gap: var(--nf-space-2); min-width: 0; padding: 0; border: 0; }
