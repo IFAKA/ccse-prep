@@ -13,8 +13,8 @@ import { playUiSound } from "@/lib/sound";
 
 function QuestionCounter({ value }: { value: number }) {
   return (
-    <span className="nf-badge" aria-label={`Question ${value}`}>
-      <span aria-hidden="true">Question {value}</span>
+    <span className="study-question-number" aria-label={`Question ${value}`}>
+      Question {value}
     </span>
   );
 }
@@ -155,12 +155,19 @@ export default function StudyView({
       <PageHeader
         title={<QuestionCounter value={question.id} />}
         titleMeta={
-          <span aria-label={taskLabels[question.task].full}>
+          <span
+            className="study-category"
+            data-task={question.task}
+            aria-label={taskLabels[question.task].full}
+          >
             <span>{taskLabels[question.task].compact}</span>
           </span>
         }
         aside={
-          <span>
+          <span
+            className="study-status"
+            data-status={state.questionStates[question.id]?.status ?? "unseen"}
+          >
             {state.questionStates[question.id]?.status ?? "unseen"}
           </span>
         }

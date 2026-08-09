@@ -13,7 +13,10 @@ export default function ProgressView({ state, update }: { state: AppState; updat
   const average = state.mockHistory.length ? Math.round(state.mockHistory.reduce((total, mock) => total + mock.score, 0) / state.mockHistory.length * 10) / 10 : 0;
 
   return <section className="nf-stack">
-    <PageHeader title="Know your runway." aside={<span>{progress.ready ? "Ready" : "Not ready yet"}</span>} />
+    <PageHeader
+      title="Know your runway."
+      aside={<span className="nf-badge" data-tone={progress.ready ? "success" : "danger"}>{progress.ready ? "Ready" : "Not ready yet"}</span>}
+    />
     <dl className="nf-grid">
       <div><dt>Seen</dt><dd><strong>{seen}/300</strong></dd></div>
       <div><dt>Mastered</dt><dd><strong>{mastered}</strong></dd></div>
