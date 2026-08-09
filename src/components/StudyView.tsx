@@ -206,7 +206,7 @@ export default function StudyView({
         <span>Exam {daysUntilExam()}d</span>
       </p>
 
-      <section className="nf-stack">
+      <section className="nf-stack study-question">
         <form className="nf-form">
           <fieldset className="nf-field">
             <legend>{question.question}</legend>
