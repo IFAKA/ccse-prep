@@ -10,9 +10,7 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
-import { dailyGoalProgress } from "@/lib/dailyGoal";
-
-const SESSION_MINIMUM = 10;
+import { dailyGoalProgress, daysUntilExam, EXAM_DATE } from "@/lib/dailyGoal";
 
 function QuestionCounter({ value }: { value: number }) {
   return (
@@ -42,7 +40,6 @@ export default function StudyView({
   );
   const [selected, setSelected] = useState<AnswerKey>();
   const [submitted, setSubmitted] = useState(false);
-  const [answeredInSession, setAnsweredInSession] = useState(0);
   const [startedAt, setStartedAt] = useState(Date.now());
   const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -77,7 +74,6 @@ export default function StudyView({
 
     await appendEvent(event);
     update(reduceEvent(state, event));
-    setAnsweredInSession((count) => count + 1);
     setSubmitted(true);
     playUiSound(grade(question, selected) ? "correct" : "incorrect");
   }, [question, selected, startedAt, state, submitted, update]);
@@ -93,7 +89,6 @@ export default function StudyView({
   }, [question.id, state.questionStates]);
 
   const optionKeys = Object.keys(question.options) as AnswerKey[];
-  const sessionComplete = answeredInSession >= SESSION_MINIMUM;
   const dailyGoal = dailyGoalProgress(state);
   const isEditableTarget = (target: EventTarget | null) => {
     const element = target as HTMLElement | null;
@@ -212,16 +207,10 @@ export default function StudyView({
             ? "You’ve done enough for today. Keep going if you want more practice."
             : `${dailyGoal.target - dailyGoal.answered} ${dailyGoal.target - dailyGoal.answered === 1 ? "question" : "questions"} left today.`}
         </p>
-        {sessionComplete && (
-          <div className="daily-goal-actions">
-            <p><strong>{dailyGoal.complete ? "Daily practice complete" : "Session complete"}</strong></p>
-            <p>You can stop for today or continue for more practice.</p>
-            <div className="nf-cluster">
-              <a className="nf-button" href="/progress">Stop For Today</a>
-              <button className="nf-button-primary" type="button" onClick={next}>Continue</button>
-            </div>
-          </div>
-        )}
+        <dl className="daily-goal-metrics">
+          <div><dt>Streak</dt><dd><strong>{dailyGoal.streak} {dailyGoal.streak === 1 ? "day" : "days"}</strong></dd></div>
+          <div><dt>Exam</dt><dd><strong>{daysUntilExam()} days</strong> · {EXAM_DATE}</dd></div>
+        </dl>
       </section>
 
       <section className="nf-stack">

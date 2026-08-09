@@ -6,8 +6,9 @@
   .daily-goal p { margin: 0; }
   .daily-goal progress { inline-size: 100%; block-size: 0.625rem; accent-color: var(--nf-color-success); }
   .daily-goal-detail { color: var(--nf-color-muted); font-size: var(--nf-text-sm); }
-  .daily-goal-actions { display: grid; gap: var(--nf-space-2); padding-block-start: var(--nf-space-2); border-block-start: var(--nf-border-width) solid var(--nf-color-border); }
-  .daily-goal-actions p { margin: 0; }
+  .daily-goal-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--nf-space-3); margin: 0; padding-block-start: var(--nf-space-2); border-block-start: var(--nf-border-width) solid var(--nf-color-border); }
+  .daily-goal-metrics dt { color: var(--nf-color-muted); font-size: var(--nf-text-sm); }
+  .daily-goal-metrics dd { margin: 0; }
   @media (max-width: 55.99rem) {
     .study-actions { flex-direction: column; align-items: stretch; }
     .study-actions > button { inline-size: 100%; }
