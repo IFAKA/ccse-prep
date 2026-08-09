@@ -1,5 +1,6 @@
 @layer patterns {
   .nf-container { width: min(100% - 2rem, var(--nf-content-width)); margin-inline: auto; }
+  .nf-app-header { display: flex; justify-content: flex-end; padding-block: var(--nf-space-3); }
   .nf-readable { max-width: var(--nf-readable-width); }
   .nf-stack { display: flex; flex-direction: column; gap: var(--nf-space-4); }
   .nf-stack[data-gap="sm"] { gap: var(--nf-space-2); }

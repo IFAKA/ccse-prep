@@ -41,7 +41,10 @@ export default function Navigation() {
       <NavigationItems items={navigationItems} pathname={pathname} />
     </nav>
     <details className="nf-navigation nf-navigation-mobile">
-      <summary>Menu</summary>
+      <summary aria-label="Open navigation menu">
+        <span className="nf-menu-icon" aria-hidden="true"><span /><span /><span /></span>
+        <span className="nf-sr-only">Menu</span>
+      </summary>
       <nav data-menu-content aria-label="Mobile navigation">
         <NavigationItems items={navigationItems} pathname={pathname} />
       </nav>

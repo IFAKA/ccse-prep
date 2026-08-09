@@ -31,8 +31,7 @@ export default function AppShell() {
   const update = (nextState: AppState) => setState(nextState);
 
   return <>
-    <header className="nf-container nf-page-header">
-      <strong>CCSE Prep</strong>
+    <header className="nf-container nf-app-header">
       <Navigation />
     </header>
 

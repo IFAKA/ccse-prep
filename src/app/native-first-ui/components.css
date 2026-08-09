@@ -8,6 +8,8 @@
   .nf-navigation { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-1); }
   .nf-navigation :where(a, summary) { display: inline-flex; align-items: center; min-height: var(--nf-control-height); padding: var(--nf-space-2) var(--nf-space-3); border-radius: var(--nf-radius-sm); }
   .nf-navigation :where(a, summary):hover { background: color-mix(in srgb, var(--nf-color-accent) 10%, transparent); }
+  .nf-menu-icon { display: inline-grid; gap: 0.25rem; width: 1.25rem; }
+  .nf-menu-icon span { display: block; height: 2px; border-radius: 999px; background: currentColor; }
   .nf-navigation [data-menu] { position: relative; }
   .nf-navigation [data-menu-content] { display: grid; gap: var(--nf-space-1); position: absolute; top: 100%; left: 0; z-index: 1; width: max-content; max-width: min(22rem, calc(100vw - 2rem)); padding: var(--nf-space-2); border: var(--nf-border-width) solid var(--nf-color-border); border-radius: var(--nf-radius-md); background: var(--nf-color-surface-raised); color: var(--nf-color-text); box-shadow: var(--nf-shadow-md); }
   .nf-navigation [data-menu-content][hidden] { display: none; }

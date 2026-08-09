@@ -23,8 +23,8 @@ export function PageHeader({
             {description}
           </p>
         )}
+        {aside && <div>{aside}</div>}
       </div>
-      {aside}
     </header>
   );
 }
