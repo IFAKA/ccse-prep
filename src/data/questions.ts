@@ -16,7 +16,14 @@ function validate(input: typeof raw): readonly Question[] {
     if (!(q.answer in q.options)) throw new Error(`Official answer missing from options for ${q.id}`);
   }
   for (const task of [1,2,3,4,5] as Task[]) if (counts[task] !== expected[task]) throw new Error(`Task ${task} count mismatch`);
-  return input.questions as readonly Question[];
+  const freeze = <T>(value: T): T => {
+    if (value && typeof value === "object" && !Object.isFrozen(value)) {
+      Object.values(value as Record<string, unknown>).forEach(freeze);
+      Object.freeze(value);
+    }
+    return value;
+  };
+  return freeze(input.questions) as readonly Question[];
 }
 export const questions = validate(raw);
 export const questionById = new Map(questions.map(q => [q.id, q]));

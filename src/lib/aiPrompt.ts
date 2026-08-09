@@ -7,10 +7,12 @@ export function buildExternalAiPrompt({
   question,
   selectedAnswer,
   manualChunks,
+  misconceptionSummary,
 }: {
   question: Question;
   selectedAnswer?: AnswerKey;
   manualChunks: readonly ManualChunk[];
+  misconceptionSummary?: string;
 }) {
   const options = (Object.entries(question.options) as [AnswerKey, string][])
     .map(([key, text]) => `${answerLabel(key)}. ${text}`)
@@ -32,6 +34,7 @@ ${options}
 
 My answer: ${selectedAnswer ? answerLabel(selectedAnswer) : "Not answered"}
 Official answer: ${answerLabel(question.answer)}
+Previous misconception summary: ${misconceptionSummary || "None recorded"}
 Official manual page for this question: ${question.page}
 
 Relevant manual context:

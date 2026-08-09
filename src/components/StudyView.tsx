@@ -62,7 +62,7 @@ export default function StudyView({
     };
   }, [showShortcuts]);
 
-  const submit = useCallback(() => {
+  const submit = useCallback(async () => {
     if (!selected || submitted) return;
 
     const event = makeEvent("ANSWER_RECORDED", {
@@ -71,7 +71,7 @@ export default function StudyView({
       responseMs: Date.now() - startedAt,
     });
 
-    appendEvent(event);
+    await appendEvent(event);
     update(reduceEvent(state, event));
     setSubmitted(true);
     playUiSound(grade(question, selected) ? "correct" : "incorrect");
@@ -87,18 +87,38 @@ export default function StudyView({
     setStartedAt(Date.now());
   }, [question.id, state.questionStates]);
 
+  const optionKeys = Object.keys(question.options) as AnswerKey[];
+  const isEditableTarget = (target: EventTarget | null) => {
+    const element = target as HTMLElement | null;
+    return Boolean(element?.closest("input, textarea, select, [contenteditable='true']"));
+  };
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.target as HTMLElement)?.tagName === "INPUT") return;
+      if (isEditableTarget(event.target)) return;
 
-      if (["1", "2", "3", "a", "b", "c"].includes(event.key) && !submitted) {
+      const key = event.key.toLowerCase();
+      if (key === "g") { window.sessionStorage.setItem("ccse-g-prefix", "1"); return; }
+      if (key === "p" && window.sessionStorage.getItem("ccse-g-prefix")) { window.sessionStorage.removeItem("ccse-g-prefix"); window.location.assign("/progress"); return; }
+      if (key === "s") { window.location.assign("/study"); return; }
+      if (key === "m") { window.location.assign("/mock"); return; }
+      if (key === "e") { window.location.assign("/errors"); return; }
+
+      if (["1", "2", "3", "a", "b", "c"].includes(key) && !submitted) {
         const key: AnswerKey =
-          event.key === "1" || event.key === "a"
+          event.key === "1" || event.key.toLowerCase() === "a"
             ? "a"
-            : event.key === "2" || event.key === "b"
+            : event.key === "2" || event.key.toLowerCase() === "b"
               ? "b"
               : "c";
         if (question.options[key]) setSelected(key);
+      }
+
+      if ((key === "j" || key === "arrowdown" || key === "k" || key === "arrowup") && !submitted) {
+        event.preventDefault();
+        const current = selected ? optionKeys.indexOf(selected) : key === "k" || key === "arrowup" ? 0 : -1;
+        const delta = key === "j" || key === "arrowdown" ? 1 : -1;
+        const nextIndex = Math.max(0, Math.min(optionKeys.length - 1, current + delta));
+        setSelected(optionKeys[nextIndex]);
       }
 
       if (event.key === "Enter" || event.key === " ") {
@@ -115,16 +135,15 @@ export default function StudyView({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeShortcuts, next, question.options, submit, submitted]);
+  }, [closeShortcuts, next, optionKeys, question.options, selected, submit, submitted]);
 
   const correct = submitted && selected ? grade(question, selected) : false;
-  const optionKeys = Object.keys(question.options) as AnswerKey[];
-
   const askExternalAi = async () => {
     const prompt = buildExternalAiPrompt({
       question,
       selectedAnswer: selected,
       manualChunks: chunksForQuestion(question.task),
+      misconceptionSummary: state.questionStates[question.id]?.misconceptionSummary,
     });
 
     try {
@@ -224,7 +243,7 @@ export default function StudyView({
         )}
       </section>
 
-      <footer>
+      <footer className="study-actions">
           <button className="nf-button-primary"
             type="button"
             onClick={submitted ? next : submit}

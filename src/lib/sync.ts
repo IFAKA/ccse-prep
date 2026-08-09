@@ -10,10 +10,14 @@ export function validateSyncEvents(value: unknown): AppEvent[] {
     if (!event || typeof event !== "object") throw new Error("Invalid sync event");
     const candidate = event as Partial<AppEvent>;
     if (typeof candidate.eventId !== "string" || candidate.eventId.length > 200) throw new Error("Invalid event ID");
-    if (typeof candidate.deviceId !== "string" || typeof candidate.timestamp !== "number") throw new Error("Invalid event metadata");
-    if (!ALLOWED_TYPES.has(candidate.type as AppEvent["type"]) || !candidate.payload || typeof candidate.payload !== "object") throw new Error("Invalid event type or payload");
+    if (typeof candidate.deviceId !== "string" || !candidate.deviceId || typeof candidate.timestamp !== "number" || !Number.isFinite(candidate.timestamp) || candidate.timestamp < 0) throw new Error("Invalid event metadata");
+    if (!ALLOWED_TYPES.has(candidate.type as AppEvent["type"]) || !candidate.payload || typeof candidate.payload !== "object" || Array.isArray(candidate.payload)) throw new Error("Invalid event type or payload");
+    const payload = candidate.payload as Record<string, unknown>;
+    if (candidate.type === "ANSWER_RECORDED" && (!Number.isInteger(payload.questionId) || typeof payload.correct !== "boolean")) throw new Error("Invalid answer event payload");
+    if (candidate.type === "MOCK_COMPLETED" && (!payload.result || typeof payload.result !== "object")) throw new Error("Invalid mock event payload");
+    if (candidate.type === "MISCONCEPTION_UPDATED" && (!payload.memory || typeof payload.memory !== "object")) throw new Error("Invalid memory event payload");
   }
-  return value as AppEvent[];
+  return [...(value as AppEvent[])].sort((a,b)=>a.timestamp-b.timestamp||a.deviceId.localeCompare(b.deviceId)||a.eventId.localeCompare(b.eventId));
 }
 
 function parsePayload(value: string): SyncPayload {

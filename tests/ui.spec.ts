@@ -1,5 +1,32 @@
-import {test,expect} from '@playwright/test';
-test('study question renders and keyboard can select',async({page})=>{await page.goto('/');await expect(page.getByText('Adaptive study')).toBeVisible();await page.keyboard.press('1');await expect(page.getByRole('button',{name:/Check/})).toBeEnabled()});
-test('mock composition starts',async({page})=>{await page.goto('/');await page.getByRole('link',{name:'Mock'}).click();await expect(page).toHaveURL(/\/mock$/);await page.getByRole('button',{name:'Start mock'}).click();await expect(page.getByText('Mock · 1/25')).toBeVisible()});
-test('reset completes without hanging on the IndexedDB connection',async({page})=>{await page.goto('/progress');page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'Reset'}).click();await expect(page).toHaveURL(/\/progress$/);await expect(page.getByText('Know your runway.')).toBeVisible()});
-test('sound setting uses the native toggle',async({page})=>{await page.goto('/settings');const toggle=page.getByRole('checkbox',{name:'Sound Effects'});await expect(toggle).toBeVisible();await toggle.check();await expect(toggle).toBeChecked();await toggle.uncheck();await expect(toggle).not.toBeChecked()});
+import { test, expect } from '@playwright/test';
+
+test('study question renders and keyboard can select', async ({ page }) => {
+  await page.goto('/study');
+  await expect(page.getByRole('heading', { name: /Question/ })).toBeVisible();
+  await page.keyboard.press('1');
+  await expect(page.getByRole('button', { name: 'Check' })).toBeEnabled();
+});
+
+test('mock composition starts', async ({ page }) => {
+  await page.goto('/mock');
+  await page.getByRole('button', { name: 'Start Mock' }).click();
+  await expect(page.getByText('Mock · 1/25')).toBeVisible();
+});
+
+test('reset completes without hanging on the IndexedDB connection', async ({ page }) => {
+  await page.goto('/settings');
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.getByRole('button', { name: 'Reset Local Data' }).click();
+  await expect(page).toHaveURL(/\/settings$/);
+  await expect(page.getByText('Make it yours.')).toBeVisible();
+});
+
+test('sound setting uses the native toggle', async ({ page }) => {
+  await page.goto('/settings');
+  const toggle = page.getByRole('checkbox', { name: 'Sound Effects' });
+  await expect(toggle).toBeVisible();
+  await toggle.check();
+  await expect(toggle).toBeChecked();
+  await toggle.uncheck();
+  await expect(toggle).not.toBeChecked();
+});

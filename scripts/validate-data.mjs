@@ -1,5 +1,9 @@
 import fs from "node:fs";
+import crypto from "node:crypto";
 const data = JSON.parse(fs.readFileSync(new URL("../ccse-2026-questions.json", import.meta.url)));
+const appData = fs.readFileSync(new URL("../src/data/ccse-2026-questions.json", import.meta.url));
+const sourceData = fs.readFileSync(new URL("../ccse-2026-questions.json", import.meta.url));
+if (!crypto.timingSafeEqual(crypto.createHash("sha256").update(sourceData).digest(), crypto.createHash("sha256").update(appData).digest())) throw new Error("Application question bank differs from official source");
 const expected = {1:120,2:36,3:24,4:36,5:84};
 if (data.count !== 300 || data.questions?.length !== 300) throw new Error("CCSE dataset must contain exactly 300 questions");
 const ids = new Set(); const counts = {1:0,2:0,3:0,4:0,5:0};
