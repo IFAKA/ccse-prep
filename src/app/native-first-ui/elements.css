@@ -1,0 +1,18 @@
+@layer elements {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--nf-color-background); color: var(--nf-color-text); }
+  body { min-width: 20rem; margin: 0; background: var(--nf-color-background); color: var(--nf-color-text); font: var(--nf-text-md)/var(--nf-body-line-height) system-ui, sans-serif; }
+  :where(h1, h2, h3, h4, p, ul, ol, dl) { margin-block: 0; }
+  :where(h1, h2, h3, h4) { line-height: var(--nf-heading-line-height); text-wrap: balance; }
+  :where(a) { color: var(--nf-color-accent); overflow-wrap: anywhere; }
+  :where(button, input, select, textarea) { max-width: 100%; font: inherit; }
+  :where(button, input, select, textarea, summary) { min-height: var(--nf-control-height); }
+  :where(button, summary) { cursor: pointer; }
+  :where(input, select, textarea) { border: var(--nf-border-width) solid var(--nf-color-border-strong); border-radius: var(--nf-radius-sm); background: var(--nf-color-surface); color: var(--nf-color-text); padding: var(--nf-space-2) var(--nf-space-3); }
+  :where(textarea) { min-height: 6rem; resize: vertical; }
+  :where(button, input, select, textarea):disabled { cursor: not-allowed; opacity: 0.6; }
+  :where(input, select, textarea)[aria-invalid="true"] { border-color: var(--nf-color-danger); }
+  :where(a, button, input, select, summary, textarea):focus-visible { outline: 2px solid var(--nf-color-accent); outline-offset: 3px; }
+  ::selection { background: color-mix(in srgb, var(--nf-color-accent) 30%, transparent); }
+  @media (forced-colors: active) { :where(button, input, select, textarea, .nf-card, .nf-alert, .nf-dialog) { border: 1px solid ButtonText; } }
+}

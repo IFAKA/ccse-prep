@@ -1,0 +1,6 @@
+@layer reset, tokens, elements, patterns, components, utilities;
+
+@import "./tokens.css" layer(tokens);
+@import "./elements.css" layer(elements);
+@import "./patterns.css" layer(patterns);
+@import "./components.css" layer(components);

@@ -12,7 +12,7 @@ export function PageHeader({
   aside?: ReactNode;
 }) {
   return (
-    <header>
+    <header className="nf-page-header">
       <div>
         <h1>
           {title}

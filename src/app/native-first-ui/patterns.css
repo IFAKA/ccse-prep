@@ -1,0 +1,18 @@
+@layer patterns {
+  .nf-container { width: min(100% - 2rem, var(--nf-content-width)); margin-inline: auto; }
+  .nf-readable { max-width: var(--nf-readable-width); }
+  .nf-stack { display: flex; flex-direction: column; gap: var(--nf-space-4); }
+  .nf-stack[data-gap="sm"] { gap: var(--nf-space-2); }
+  .nf-stack[data-gap="lg"] { gap: var(--nf-space-8); }
+  .nf-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-3); }
+  .nf-grid { display: grid; gap: var(--nf-space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+  .nf-page { min-height: 100vh; }
+  .nf-page-header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--nf-space-4); padding-block: var(--nf-space-8) var(--nf-space-6); }
+  .nf-page-header > :first-child { min-width: min(100%, 20rem); }
+  .nf-sidebar { display: grid; align-items: start; gap: var(--nf-space-6); }
+  .nf-sidebar > nav { min-width: 0; }
+  .nf-table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+  .nf-table-scroll:focus-visible { outline: 2px solid var(--nf-color-accent); outline-offset: 3px; }
+  .nf-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  @media (min-width: 56rem) { .nf-sidebar { grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr); } }
+}

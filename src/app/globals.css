@@ -1,10 +1,6 @@
-/* Browser defaults are the design system. This file only fixes global usability. */
+/* Document-level reset only. Native-first contracts live in native-first-ui. */
 
 @layer reset {
-
-:root {
-  color-scheme: light dark;
-}
 
 *,
 *::before,
@@ -15,11 +11,6 @@
 html,
 body {
   margin: 0;
-}
-
-body {
-  min-width: 320px;
-  font: 16px/1.5 system-ui, sans-serif;
 }
 
 }
