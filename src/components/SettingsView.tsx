@@ -33,13 +33,13 @@ export default function SettingsView({ state, update }: { state: AppState; updat
     location.reload();
   };
 
-  return <section className="view-enter">
+  return <section className="nf-stack">
     <PageHeader title="Make it yours." description="Simple preferences for a focused, local-first study desk." />
 
-    <section>
+    <section className="nf-section">
         <h2>Sound</h2>
         <p>Small feedback for answers and study actions. Your choice stays on this device.</p>
-        <div className="setting-row">
+        <div className="nf-split">
           <div>
             <p><strong>Sound Effects</strong></p>
             <p>Play gentle tones for correct, incorrect, and completed actions.</p>
@@ -48,13 +48,13 @@ export default function SettingsView({ state, update }: { state: AppState; updat
         </div>
       </section>
 
-      <section>
+      <section className="nf-section">
         <h2>Local Data</h2>
         <p>Your study history stays in this browser unless you export or sync it.</p>
-        <div className="action-group">
-          <button type="button" onClick={download}>Export State</button>
-          <label className="file-picker">Import State <input type="file" accept="application/json" onChange={importFile} /></label>
-          <button type="button" onClick={reset}>Reset Local Data</button>
+        <div className="nf-cluster">
+          <button className="nf-button-primary" type="button" onClick={download}>Export State</button>
+          <label className="nf-field">Import State <input type="file" accept="application/json" onChange={importFile} /></label>
+          <button className="nf-button-danger" type="button" onClick={reset}>Reset Local Data</button>
         </div>
       </section>
 

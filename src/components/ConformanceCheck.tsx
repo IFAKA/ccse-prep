@@ -11,7 +11,7 @@ type ConformanceCheckProps = {
 export default function ConformanceCheck({ title, instruction, expected }: ConformanceCheckProps) {
   const [checked, setChecked] = useState(false);
 
-  return <article className="conformance-check" data-status={checked ? "pass" : "pending"}>
+  return <article className="nf-card">
     <header>
       <h3>{title}</h3>
       <span>{checked ? "Pass" : "Pending"}</span>

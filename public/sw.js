@@ -1,4 +1,4 @@
-const CACHE = 'ccse-desk-v1';
+const CACHE = 'ccse-desk-v2';
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['/', '/manifest.webmanifest'])));
 });

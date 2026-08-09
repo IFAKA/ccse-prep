@@ -13,7 +13,7 @@ import { playUiSound } from "@/lib/sound";
 
 function QuestionCounter({ value }: { value: number }) {
   return (
-    <span className="question-counter" aria-label={`Question ${value}`}>
+    <span className="nf-badge" aria-label={`Question ${value}`}>
       <span aria-hidden="true">Question {value}</span>
     </span>
   );
@@ -151,7 +151,7 @@ export default function StudyView({
   };
 
   return (
-    <section className="view-enter study-view">
+    <section className="nf-stack">
       <PageHeader
         title={<QuestionCounter value={question.id} />}
         titleMeta={
@@ -167,10 +167,9 @@ export default function StudyView({
       />
 
       <section>
-        <fieldset>
-          <legend>{question.question}</legend>
-
-          <div className="answers">
+        <form className="nf-form">
+          <fieldset className="nf-field">
+            <legend>{question.question}</legend>
           {optionKeys.map((key) => {
             const isSelected = selected === key;
             const isOfficial = submitted && key === question.answer;
@@ -179,13 +178,6 @@ export default function StudyView({
             return (
               <label
                 key={key}
-                className={`answer ${
-                  isOfficial
-                    ? "is-correct"
-                    : isWrong
-                      ? "is-wrong"
-                      : ""
-                }`}
               >
                 <input
                   type="radio"
@@ -199,26 +191,23 @@ export default function StudyView({
               </label>
             );
           })}
-          </div>
-        </fieldset>
+          </fieldset>
+        </form>
 
         {submitted && (
           <section
-            className={`feedback ${
-              correct
-                ? "is-correct"
-                : "is-wrong"
-            }`}
+            className="nf-alert"
+            data-tone={correct ? "success" : "danger"}
             aria-label="Answer feedback"
             aria-live="polite"
           >
-            <div className="feedback-summary">
+            <div className="nf-stack">
               <p><strong>{correct ? "Correct" : "Not quite"}</strong></p>
               <p>Official answer: <strong>{question.answer}</strong></p>
             </div>
 
-            <div className="feedback-help">
-              <button type="button" onClick={askExternalAi}>
+            <div className="nf-stack">
+          <button className="nf-button" type="button" onClick={askExternalAi}>
                 Share With AI
               </button>
               <p>Opens your Android share menu so you can choose ChatGPT or another AI app.</p>
@@ -229,7 +218,7 @@ export default function StudyView({
       </section>
 
       <footer>
-          <button
+          <button className="nf-button-primary"
             type="button"
             onClick={submitted ? next : submit}
             disabled={!selected}
@@ -241,13 +230,13 @@ export default function StudyView({
       {showShortcuts && (
         <dialog
           ref={shortcutsDialog}
-          className={`shortcut-dialog ${closingShortcuts ? "is-closing" : ""}`}
+          className="nf-dialog"
           aria-labelledby="shortcuts-title"
           onCancel={(event) => { event.preventDefault(); closeShortcuts(); }}
         >
-          <header className="dialog-header">
+          <header className="nf-split">
             <h3 id="shortcuts-title">Keyboard Shortcuts</h3>
-            <button type="button" onClick={closeShortcuts}>Close</button>
+          <button className="nf-button" type="button" onClick={closeShortcuts}>Close</button>
           </header>
           <p>1 / 2 / 3 or A / B / C to answer. Enter or Space to check and continue.</p>
         </dialog>

@@ -49,19 +49,19 @@ export default function MockView({ state, update }: { state: AppState; update: (
   };
 
   if (result) {
-    return <section className="view-enter">
+    return <section className="nf-stack">
       <PageHeader title={`${result.score}/25`} description={`${result.score >= 15 ? "Aprobado" : "Sigue entrenando"} · threshold 15/25`} />
-      <dl>
+      <dl className="nf-grid">
         {Object.entries(result.taskBreakdown).map(([task, value]) => <div key={task}><dt>Task {task}</dt><dd><strong>{value.correct}/{value.total}</strong></dd></div>)}
       </dl>
-      <button type="button" onClick={start}>New Mock</button>
+      <button className="nf-button-primary" type="button" onClick={start}>New Mock</button>
     </section>;
   }
 
   if (!active) {
-    return <section className="view-enter">
+    return <section className="nf-stack">
       <PageHeader title="25 questions. 45 quiet minutes." description="Exact CCSE composition: 10 / 3 / 2 / 3 / 7. No feedback until you hand in the paper." />
-      <button type="button" onClick={start}>Start Mock</button>
+      <button className="nf-button-primary" type="button" onClick={start}>Start Mock</button>
     </section>;
   }
 
@@ -69,14 +69,14 @@ export default function MockView({ state, update }: { state: AppState; update: (
   const remaining = Math.max(0, 45 * 60 - Math.floor((now - started) / 1000));
   const optionKeys = Object.keys(question.options) as AnswerKey[];
 
-  return <section className="view-enter">
+  return <section className="nf-stack">
     <header><h2>Mock · {index + 1}/25</h2><p><strong aria-label="Time remaining">{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}</strong></p></header>
-    <section>
+    <section className="nf-section">
       <p>Task {question.task}</p>
-      <fieldset>
+      <fieldset className="nf-field">
         <legend>{question.question}</legend>
-        <div className="answers">
-          {optionKeys.map((answer) => <label key={answer} className="answer">
+        <div className="nf-form">
+          {optionKeys.map((answer) => <label key={answer}>
             <input
               type="radio"
               name={`mock-question-${question.id}`}
@@ -89,6 +89,6 @@ export default function MockView({ state, update }: { state: AppState; update: (
         </div>
       </fieldset>
     </section>
-    <footer><button type="button" disabled={!index} onClick={() => setIndex(index - 1)}>Back</button>{index === 24 ? <button type="button" onClick={finish}>Hand In</button> : <button type="button" onClick={() => setIndex(index + 1)}>Next</button>}</footer>
+    <footer className="nf-cluster"><button className="nf-button" type="button" disabled={!index} onClick={() => setIndex(index - 1)}>Back</button>{index === 24 ? <button className="nf-button-primary" type="button" onClick={finish}>Hand In</button> : <button className="nf-button-primary" type="button" onClick={() => setIndex(index + 1)}>Next</button>}</footer>
   </section>;
 }

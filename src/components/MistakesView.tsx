@@ -9,24 +9,18 @@ export default function MistakesView({ state }: { state: AppState; update: (stat
   const [filter, setFilter] = useState("all");
   const missed = questions.filter((question) => (state.questionStates[question.id]?.incorrect ?? 0) > 0).filter((question) => filter === "all" || filter === "task1" ? filter === "all" || question.task === 1 : state.questionStates[question.id]?.status === filter);
 
-  return <section className="view-enter">
+  return <section className="nf-stack">
     <PageHeader title="Every miss, remembered." description="Review the questions that need another pass, grouped by your current status." />
-    <fieldset className="filter-group">
-      <legend>Show</legend>
-      {["all", "weak", "mastered", "task1"].map((option) => (
-        <label key={option}>
-          <input
-            type="radio"
-            name="mistake-filter"
-            value={option}
-            checked={filter === option}
-            onChange={() => setFilter(option)}
-          />
-          {option === "task1" ? "Task 1" : option[0].toUpperCase() + option.slice(1)}
-        </label>
-      ))}
-    </fieldset>
-    <ul>
+    <label className="nf-field">
+      <span>Show</span>
+      <select value={filter} onChange={(event) => setFilter(event.target.value)}>
+        <option value="all">All</option>
+        <option value="weak">Weak</option>
+        <option value="mastered">Mastered</option>
+        <option value="task1">Task 1</option>
+      </select>
+    </label>
+    <ul className="nf-stack">
       {missed.length ? missed.map((question) => (
         <li key={question.id}>
           <article>

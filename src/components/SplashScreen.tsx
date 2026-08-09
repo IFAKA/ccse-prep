@@ -20,10 +20,10 @@ export default function SplashScreen() {
   }, []);
 
   if (!visible) return null;
-  return <div className="splash-screen" role="status" aria-label="CCSE Prep 2026" aria-live="polite">
-    <div className="splash-lockup">
-      <div className="splash-wordmark">CCSE Prep <span>2026</span></div>
-      <p className="splash-caption">Preparación oficial · Local-first</p>
+  return <section className="nf-center" role="status" aria-label="CCSE Prep 2026" aria-live="polite">
+    <div className="nf-card nf-stack">
+      <strong>CCSE Prep <span>2026</span></strong>
+      <p>Preparación oficial · Local-first</p>
     </div>
-  </div>;
+  </section>;
 }

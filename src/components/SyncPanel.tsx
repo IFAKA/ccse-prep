@@ -66,7 +66,7 @@ export default function SyncPanel({ state, update }: { state: AppState; update: 
   };
 
   return (
-    <section>
+    <section className="nf-section">
       <header>
         <div>
           <h2>Sync nearby</h2>
@@ -77,26 +77,26 @@ export default function SyncPanel({ state, update }: { state: AppState; update: 
 
       {mode === "idle" && (
         <div>
-          <div className="action-group">
-            <button type="button" onClick={host}>Create sync session</button>
-            <button type="button" onClick={() => setMode("join")}>Join with a code</button>
+          <div className="nf-cluster">
+            <button className="nf-button-primary" type="button" onClick={host}>Create sync session</button>
+            <button className="nf-button" type="button" onClick={() => setMode("join")}>Join with a code</button>
           </div>
         </div>
       )}
 
       {mode === "host" && (
-        <form onSubmit={(event) => { event.preventDefault(); void finish(); }}>
-          <label>Offer code<textarea readOnly value={code} /></label>
-          <label>Answer from other device<textarea value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Paste answer here…" /></label>
-          <button type="submit" disabled={!answer}>Connect devices</button>
+          <form className="nf-form" onSubmit={(event) => { event.preventDefault(); void finish(); }}>
+          <label className="nf-field">Offer code<textarea readOnly value={code} /></label>
+          <label className="nf-field">Answer from other device<textarea value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Paste answer here…" /></label>
+          <button className="nf-button-primary" type="submit" disabled={!answer}>Connect devices</button>
         </form>
       )}
 
       {mode === "join" && (
-        <form onSubmit={(event) => { event.preventDefault(); void join(); }}>
-          <label>Offer from other device<textarea value={code} onChange={(event) => setCode(event.target.value)} placeholder="Paste offer here…" /></label>
-          <button type="submit" disabled={!code}>Create answer</button>
-          {answer && <label>Answer code<textarea readOnly value={answer} /></label>}
+          <form className="nf-form" onSubmit={(event) => { event.preventDefault(); void join(); }}>
+          <label className="nf-field">Offer from other device<textarea value={code} onChange={(event) => setCode(event.target.value)} placeholder="Paste offer here…" /></label>
+          <button className="nf-button-primary" type="submit" disabled={!code}>Create answer</button>
+          {answer && <label className="nf-field">Answer code<textarea readOnly value={answer} /></label>}
         </form>
       )}
 
