@@ -2,6 +2,12 @@
 
 @layer components {
 
+@media (max-width: 47.99rem) {
+  .site-header > :first-child {
+    min-width: 0;
+  }
+}
+
 .splash-screen {
   position: fixed;
   inset: 0;
