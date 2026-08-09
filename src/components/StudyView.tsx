@@ -241,7 +241,6 @@ export default function StudyView({
           <button className="nf-button" type="button" onClick={askExternalAi}>
                 Share With AI
               </button>
-              <p>Opens your Android share menu so you can choose ChatGPT or another AI app.</p>
               {aiStatus && <p aria-live="polite">{aiStatus}</p>}
             </div>
           </section>
