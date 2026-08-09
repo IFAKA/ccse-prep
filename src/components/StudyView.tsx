@@ -10,67 +10,11 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
-import { motion, useReducedMotion } from "motion/react";
 
 function QuestionCounter({ value }: { value: number }) {
-  const reduceMotion = useReducedMotion();
-  const [transition, setTransition] = useState({
-    from: value,
-    to: value,
-    direction: "up" as "up" | "down",
-  });
-
-  useEffect(() => {
-    setTransition((current) =>
-      current.to === value
-        ? current
-        : {
-            from: current.to,
-            to: value,
-            direction: value >= current.to ? "up" : "down",
-          },
-    );
-  }, [value]);
-
-  const fromDigits = String(transition.from).padStart(4, "0");
-  const toDigits = String(transition.to).padStart(4, "0");
-  const isMoving = transition.from !== transition.to;
-  const changedIndices = toDigits
-    .split("")
-    .map((digit, index) => (digit === fromDigits[index] ? -1 : index))
-    .filter((index) => index !== -1);
-
   return (
     <span className="question-counter" aria-label={`Question ${value}`}>
-      <span aria-hidden="true">Question&nbsp;</span>
-      <span className="counter-digits" aria-hidden="true">
-        {toDigits.split("").map((digit, index) => {
-          const fromDigit = fromDigits[index];
-          const key = `${transition.from}-${transition.to}-${index}`;
-          const changed = fromDigit !== digit;
-
-          if (!isMoving || reduceMotion || !changed) {
-            return <span className="question-counter-digit" key={key}>{digit}</span>;
-          }
-
-          const goingUp = transition.direction === "up";
-          const changedIndex = changedIndices.indexOf(index);
-          const delay = (changedIndices.length - 1 - changedIndex) * 0.04;
-          return (
-            <span className="question-counter-digit" key={key}>
-              <motion.span
-                className="question-counter-track"
-                initial={{ transform: goingUp ? "translateY(0%)" : "translateY(-50%)" }}
-                animate={{ transform: goingUp ? "translateY(-50%)" : "translateY(0%)" }}
-                transition={{ duration: 0.22, delay, ease: [0.23, 1, 0.32, 1] }}
-              >
-                {goingUp ? <span>{fromDigit}</span> : <span>{digit}</span>}
-                {goingUp ? <span>{digit}</span> : <span>{fromDigit}</span>}
-              </motion.span>
-            </span>
-          );
-        })}
-      </span>
+      <span aria-hidden="true">Question {value}</span>
     </span>
   );
 }
