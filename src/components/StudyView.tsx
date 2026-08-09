@@ -219,7 +219,7 @@ export default function StudyView({
 
             <div className="feedback-help">
               <button type="button" onClick={askExternalAi}>
-                Ask AI With Full Context
+                Share With AI
               </button>
               <p>Opens your Android share menu so you can choose ChatGPT or another AI app.</p>
               {aiStatus && <p aria-live="polite">{aiStatus}</p>}
