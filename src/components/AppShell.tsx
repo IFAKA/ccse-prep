@@ -25,7 +25,7 @@ export default function AppShell() {
     }).catch(() => {
       setState(blankState());
     }).finally(() => setReady(true));
-    if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js?v=3").catch(() => {});
   }, []);
 
   const update = (nextState: AppState) => setState(nextState);

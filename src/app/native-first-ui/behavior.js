@@ -1,6 +1,5 @@
 const initializedRoots = new WeakSet();
 const menuStates = new WeakMap();
-const responsiveNavigationStates = new WeakMap();
 
 function menus(root) {
   return root.querySelectorAll(".nf-navigation [data-menu-content]");
@@ -47,41 +46,9 @@ function closeSoon(root) {
   state.close = setTimeout(() => closeMenus(root), 180);
 }
 
-function positionResponsiveNavigation(navigation) {
-  const summary = navigation.querySelector(":scope > summary");
-  const panel = navigation.querySelector(":scope > nav");
-  if (!summary || !panel || !navigation.open) return;
-
-  const margin = 16;
-  const gap = 8;
-  const rect = summary.getBoundingClientRect();
-  const width = Math.min(288, window.innerWidth - margin * 2);
-  const left = Math.min(Math.max(margin, rect.right - width), window.innerWidth - margin - width);
-
-  panel.style.position = "fixed";
-  panel.style.insetBlockStart = `${rect.bottom + gap}px`;
-  panel.style.insetInlineStart = `${left}px`;
-  panel.style.insetInlineEnd = "auto";
-  panel.style.inlineSize = `${width}px`;
-}
-
-function enhanceResponsiveNavigation(root) {
-  const navigations = root.querySelectorAll(".nf-navigation-mobile");
-  if (!navigations.length) return;
-
-  const state = responsiveNavigationStates.get(root) ?? { update: null };
-  state.update = () => navigations.forEach(positionResponsiveNavigation);
-  responsiveNavigationStates.set(root, state);
-
-  navigations.forEach((navigation) => navigation.addEventListener("toggle", state.update));
-  window.addEventListener("resize", state.update);
-  window.addEventListener("scroll", state.update, true);
-}
-
 export function enhanceNativeInteractions(root = document) {
   if (initializedRoots.has(root)) return;
   initializedRoots.add(root);
-  enhanceResponsiveNavigation(root);
 
   root.addEventListener("pointerover", (event) => {
     const target = event.target instanceof Element ? event.target : null;
