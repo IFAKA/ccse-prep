@@ -25,17 +25,17 @@
   .nf-button-primary:hover, .nf-button-danger:hover { filter: brightness(0.94); }
   .nf-button-quiet { border-color: transparent; background: transparent; color: var(--nf-color-accent-strong); }
   .nf-button-quiet:hover { background: color-mix(in srgb, var(--nf-color-accent) 10%, transparent); }
-  .study-category, .study-status { display: inline-block; font-weight: 650; }
+  .study-category, .study-status { display: inline-flex; align-items: center; min-height: 1.75rem; max-width: 100%; padding: var(--nf-space-1) var(--nf-space-2); border-radius: var(--nf-radius-pill); font-size: var(--nf-text-sm); font-weight: 650; overflow-wrap: anywhere; }
   .study-category { margin-block-start: var(--nf-space-2); }
-  .study-category[data-task="1"] { color: var(--nf-color-accent-strong); }
-  .study-category[data-task="2"] { color: var(--nf-color-info); }
-  .study-category[data-task="3"] { color: var(--nf-color-success); }
-  .study-category[data-task="4"] { color: var(--nf-color-warning); }
-  .study-category[data-task="5"] { color: var(--nf-color-danger); }
-  .study-status { color: var(--nf-color-muted); text-transform: capitalize; }
-  .study-status[data-status="learning"] { color: var(--nf-color-info); }
-  .study-status[data-status="weak"] { color: var(--nf-color-danger); }
-  .study-status[data-status="mastered"] { color: var(--nf-color-success); }
+  .study-category[data-task="1"] { background: color-mix(in srgb, var(--nf-color-accent) 14%, transparent); color: var(--nf-color-accent-strong); }
+  .study-category[data-task="2"] { background: color-mix(in srgb, var(--nf-color-info) 14%, transparent); color: var(--nf-color-info); }
+  .study-category[data-task="3"] { background: color-mix(in srgb, var(--nf-color-success) 14%, transparent); color: var(--nf-color-success); }
+  .study-category[data-task="4"] { background: color-mix(in srgb, var(--nf-color-warning) 16%, transparent); color: var(--nf-color-warning); }
+  .study-category[data-task="5"] { background: color-mix(in srgb, var(--nf-color-danger) 14%, transparent); color: var(--nf-color-danger); }
+  .study-status { background: color-mix(in srgb, var(--nf-color-muted) 14%, transparent); color: var(--nf-color-muted); text-transform: capitalize; }
+  .study-status[data-status="learning"] { background: color-mix(in srgb, var(--nf-color-info) 14%, transparent); color: var(--nf-color-info); }
+  .study-status[data-status="weak"] { background: color-mix(in srgb, var(--nf-color-danger) 14%, transparent); color: var(--nf-color-danger); }
+  .study-status[data-status="mastered"] { background: color-mix(in srgb, var(--nf-color-success) 14%, transparent); color: var(--nf-color-success); }
   .nf-card { padding: var(--nf-space-5); border: var(--nf-border-width) solid var(--nf-color-border); border-radius: var(--nf-radius-md); background: var(--nf-color-surface); box-shadow: var(--nf-shadow-sm); }
   .nf-badge { display: inline-flex; align-items: center; min-height: 1.75rem; max-width: 100%; padding: var(--nf-space-1) var(--nf-space-2); border-radius: var(--nf-radius-pill); background: color-mix(in srgb, var(--nf-color-accent) 14%, transparent); color: var(--nf-color-accent-strong); font-size: var(--nf-text-sm); font-weight: 650; overflow-wrap: anywhere; }
   .nf-badge[data-tone="success"] { background: color-mix(in srgb, var(--nf-color-success) 14%, transparent); color: var(--nf-color-success); }
@@ -67,7 +67,7 @@
   .nf-toggle input[type="checkbox"]:checked + .nf-toggle-control::before { background: var(--nf-color-accent-ink); transform: translateX(1.25rem); }
   .nf-toggle input[type="checkbox"]:focus-visible + .nf-toggle-control { outline: 2px solid var(--nf-color-accent); outline-offset: 3px; box-shadow: var(--nf-focus-ring); }
   .nf-toggle input[type="checkbox"]:disabled + .nf-toggle-control { opacity: 0.6; }
-  @media (forced-colors: active) { .nf-toggle-control { border: 1px solid ButtonText; background: Canvas; box-shadow: none; } .nf-toggle-control::before { background: ButtonText; box-shadow: none; } .nf-toggle input[type="checkbox"]:checked + .nf-toggle-control { background: Highlight; } .study-category, .study-status { color: CanvasText; } }
+  @media (forced-colors: active) { .nf-toggle-control { border: 1px solid ButtonText; background: Canvas; box-shadow: none; } .nf-toggle-control::before { background: ButtonText; box-shadow: none; } .nf-toggle input[type="checkbox"]:checked + .nf-toggle-control { background: Highlight; } .study-category, .study-status { border: 1px solid ButtonText; background: Canvas; color: CanvasText; } }
   .nf-help { color: var(--nf-color-muted); font-size: var(--nf-text-sm); }
   .nf-error { color: var(--nf-color-danger); font-size: var(--nf-text-sm); }
   .nf-table { width: 100%; min-width: 42rem; border-collapse: collapse; background: var(--nf-color-surface); }
