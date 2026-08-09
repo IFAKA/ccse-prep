@@ -10,7 +10,7 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
-import { dailyGoalProgress, daysUntilExam, EXAM_DATE } from "@/lib/dailyGoal";
+import { dailyGoalProgress, daysUntilExam } from "@/lib/dailyGoal";
 
 function QuestionCounter({ value }: { value: number }) {
   return (
@@ -194,23 +194,16 @@ export default function StudyView({
         }
       />
 
-      <section className="daily-goal" data-complete={dailyGoal.complete ? "true" : "false"} aria-label="Daily study goal">
-        <div className="nf-split">
-          <p><strong>{dailyGoal.complete ? "Daily goal complete" : "Daily goal"}</strong></p>
-          <p aria-label={`${dailyGoal.answered} of ${dailyGoal.target} questions answered today`}>
+      <section className="daily-goal" data-complete={dailyGoal.complete ? "true" : "false"} aria-label="Daily study progress">
+        <p aria-live="polite">
+          <strong>Today</strong>
+          <span aria-label={`${dailyGoal.answered} of ${dailyGoal.target} questions answered`}>
             {dailyGoal.answered}/{dailyGoal.target}
-          </p>
-        </div>
-        <progress value={dailyGoal.answered} max={dailyGoal.target} aria-label="Daily goal progress" />
-        <p className="daily-goal-detail" aria-live="polite">
-          {dailyGoal.complete
-            ? "You’ve done enough for today. Keep going if you want more practice."
-            : `${dailyGoal.target - dailyGoal.answered} ${dailyGoal.target - dailyGoal.answered === 1 ? "question" : "questions"} left today.`}
+          </span>
+          <span>Streak {dailyGoal.streak}d</span>
+          <span>Exam {daysUntilExam()}d</span>
         </p>
-        <dl className="daily-goal-metrics">
-          <div><dt>Streak</dt><dd><strong>{dailyGoal.streak} {dailyGoal.streak === 1 ? "day" : "days"}</strong></dd></div>
-          <div><dt>Exam</dt><dd><strong>{daysUntilExam()} days</strong> · {EXAM_DATE}</dd></div>
-        </dl>
+        <progress value={dailyGoal.answered} max={dailyGoal.target} aria-label="Daily study progress" />
       </section>
 
       <section className="nf-stack">
