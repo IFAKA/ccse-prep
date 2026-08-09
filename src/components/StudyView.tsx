@@ -172,8 +172,9 @@ export default function StudyView({
   };
 
   return (
-    <section className="nf-stack">
+    <section className="nf-stack study-view">
       <PageHeader
+        className="study-page-header"
         title={<QuestionCounter value={question.id} />}
         titleMeta={
           <span
@@ -193,6 +194,17 @@ export default function StudyView({
           </span>
         }
       />
+
+      <p
+        className="daily-goal"
+        data-complete={dailyGoal.complete ? "true" : "false"}
+        aria-label="Daily study progress"
+        aria-live="polite"
+      >
+        <strong>Today {dailyGoal.answered}/{dailyGoal.target}</strong>
+        <span>Streak {dailyGoal.streak}d</span>
+        <span>Exam {daysUntilExam()}d</span>
+      </p>
 
       <section className="nf-stack">
         <form className="nf-form">
@@ -245,17 +257,6 @@ export default function StudyView({
             </div>
           </section>
         )}
-
-        <p
-          className="daily-goal"
-          data-complete={dailyGoal.complete ? "true" : "false"}
-          aria-label="Daily study progress"
-          aria-live="polite"
-        >
-          <strong>Today {dailyGoal.answered}/{dailyGoal.target}</strong>
-          <span>Streak {dailyGoal.streak}d</span>
-          <span>Exam {daysUntilExam()}d</span>
-        </p>
 
       </section>
 
