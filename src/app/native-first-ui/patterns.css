@@ -7,8 +7,8 @@
   .nf-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-3); }
   .nf-grid { display: grid; align-items: start; gap: var(--nf-space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
   .nf-page-header { display: grid; gap: var(--nf-space-3); padding-block: var(--nf-space-3) var(--nf-space-6); }
-  .nf-topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--nf-space-3); }
-  .nf-page-heading { min-width: 0; }
+  .nf-topbar { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: var(--nf-space-3); }
+  .nf-page-heading { flex: 1 1 auto; min-width: 0; }
   .nf-page-meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-2); margin-block-start: var(--nf-space-2); }
   .nf-sidebar { display: grid; align-items: start; gap: clamp(var(--nf-space-6), 4vw, var(--nf-space-10)); padding-block: var(--nf-space-8) var(--nf-space-10); }
   .nf-sidebar > nav { min-width: 0; position: sticky; top: 1.25rem; align-self: start; }
