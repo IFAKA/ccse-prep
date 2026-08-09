@@ -4,7 +4,7 @@ This project uses semantic HTML as its public interface. CSS supplies consistent
 
 The styles are intentionally split into two layers:
 
-- `src/app/core.css` contains reusable native-first contracts for any application.
+- `src/app/native-first-ui/core.css` contains reusable native-first contracts for any application.
 - `src/app/ui.css` contains CCSE-specific screens and can grow without inflating the core layer.
 
 Both desktop and mobile use the same semantic markup and navigation data. The base layout is mobile-first; wider viewports add room with media queries instead of introducing a second component system.
