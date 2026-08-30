@@ -1,6 +1,7 @@
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 
 export default [
+  { ignores: ["src/lib/terminalQuiz.d.mts"] },
   ...nextCoreWebVitals,
   {
     rules: {

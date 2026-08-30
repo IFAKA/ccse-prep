@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { blankState } from "@/lib/events";
 import { loadState } from "@/lib/storage";
+import { scheduleDailyReminder } from "@/lib/reminders";
 import type { AppState } from "@/lib/types";
 import MistakesView from "./MistakesView";
 import MockView from "./MockView";
@@ -21,6 +22,7 @@ export default function AppShell() {
   useEffect(() => {
     loadState().then((nextState) => {
       setState(nextState);
+      void scheduleDailyReminder(nextState.settings);
     }).catch(() => {
       setState(blankState());
     }).finally(() => setReady(true));

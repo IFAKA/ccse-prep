@@ -1,6 +1,6 @@
 import type { AppEvent } from "./types";
 
-const ALLOWED_TYPES = new Set<AppEvent["type"]>(["ANSWER_RECORDED", "MOCK_COMPLETED", "MISCONCEPTION_UPDATED"]);
+const ALLOWED_TYPES = new Set<AppEvent["type"]>(["ANSWER_RECORDED", "MOCK_COMPLETED", "MISCONCEPTION_UPDATED", "SETTINGS_UPDATED"]);
 export type SyncEventMessage = { protocol: "ccse-sync-v1"; type: "events"; events: AppEvent[] };
 
 export function validateSyncEvents(value: unknown): AppEvent[] {
@@ -15,6 +15,7 @@ export function validateSyncEvents(value: unknown): AppEvent[] {
     if (candidate.type === "ANSWER_RECORDED" && (!Number.isInteger(payload.questionId) || typeof payload.correct !== "boolean")) throw new Error("Invalid answer event payload");
     if (candidate.type === "MOCK_COMPLETED" && (!payload.result || typeof payload.result !== "object")) throw new Error("Invalid mock event payload");
     if (candidate.type === "MISCONCEPTION_UPDATED" && (!payload.memory || typeof payload.memory !== "object")) throw new Error("Invalid memory event payload");
+    if (candidate.type === "SETTINGS_UPDATED" && Object.keys(payload).some((key) => !["sound", "dailyTarget", "remindersEnabled", "reminderHour", "reminderMinute"].includes(key))) throw new Error("Invalid settings event payload");
   }
   return [...(value as AppEvent[])].sort((a,b)=>a.timestamp-b.timestamp||a.deviceId.localeCompare(b.deviceId)||a.eventId.localeCompare(b.eventId));
 }

@@ -22,6 +22,25 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Terminal start-of-day gate
+
+Install the CLI from this repository with `npm link`, then install the opt-in macOS Zsh gate:
+
+```bash
+npm link
+zsh scripts/install-ccse-gate.zsh
+```
+
+The first interactive shell each day asks at least 10 CCSE questions before releasing the prompt. Press `J`, `K`, or `L` to choose A, B, or C. After question 10, press `Enter` to unlock or continue practicing. Non-interactive commands are not gated.
+
+To remove the gate later:
+
+```bash
+npm run terminal:uninstall
+```
+
+Terminal answers are stored locally at `~/.local/share/ccse-prep/events.json`. Use Settings → Local Data → Import State to merge that file into the web app; export the web state and replace the terminal event log if you need the CLI to receive browser history.
+
 ## Verify
 
 ```bash
