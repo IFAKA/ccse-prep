@@ -24,14 +24,15 @@ Open `http://localhost:3000`.
 
 ## Terminal start-of-day gate
 
-Install the CLI from this repository with `npm link`, then install the opt-in macOS Zsh gate:
+Install the CLI and opt-in macOS Zsh gate:
 
 ```bash
-npm link
-zsh scripts/install-ccse-gate.zsh
+npm run terminal:install
 ```
 
 The first interactive shell each day asks at least 10 CCSE questions before releasing the prompt. Press `J`, `K`, or `L` to choose A, B, or C. After question 10, press `Enter` to unlock or continue practicing. Non-interactive commands are not gated.
+
+The terminal uses the same spaced-repetition scheduler as the web app: persisted unseen, weak, and due questions are prioritized, while current-session answers immediately update the next selection.
 
 To remove the gate later:
 

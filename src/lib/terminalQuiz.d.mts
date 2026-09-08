@@ -1,6 +1,16 @@
 export const TERMINAL_MINIMUM: number;
 export function answerKeyForInput(input: unknown): "a" | "b" | "c" | undefined;
-export function terminalSummary(answers: readonly { correct: boolean }[]): { answered: number; correct: number };
+export function terminalSummary(answers: readonly { correct: boolean; responseMs?: number }[]): { answered: number; correct: number };
+export function terminalSessionSummary(answers: readonly { correct: boolean; responseMs?: number }[]): { answered: number; correct: number; accuracy: number; averageResponseMs: number };
 export function canFinish(answers: readonly unknown[]): boolean;
 export function nextTerminalQuestion<T extends { id: number }>(bank: readonly T[], usedIds: ReadonlySet<number>): T;
+import type { QuestionState } from "@/lib/types";
+export function selectTerminalQuestion<T extends { id: number }>(bank: readonly T[], states: Record<number, QuestionState>, now?: number, exclude?: ReadonlySet<number>): T;
+export function buildSessionPlan<T extends { id: number }>(bank: readonly T[], states: Record<number, QuestionState>, now?: number, sessionSize?: number): T[];
+export function reviewInterval(correct: boolean, state?: QuestionState): number;
+export function terminalDashboardMetrics<T extends { id: number }>(bank: readonly T[], states: Record<number, QuestionState>, events?: readonly { timestamp: number; type: string }[], now?: number, sessionAnswers?: readonly { correct: boolean; responseMs?: number }[]): { unseen: number; learning: number; weak: number; mastered: number; due: number; streak: number; dailyAnswered: number; dailyComplete: boolean; sessionAccuracy: number; averageResponseMs: number };
+export function completionSummary(answers: readonly { correct: boolean; responseMs?: number }[], beforeStates?: Record<number, QuestionState>, afterStates?: Record<number, QuestionState>): { answered: number; correct: number; accuracy: number; averageResponseMs: number; newlyMastered: number; weak: number; nextAction: string; unlockMessage: string };
+export function renderCompletionSummary(summary: ReturnType<typeof completionSummary>): string;
+export function reduceTerminalEvents(events: readonly { eventId: string; deviceId: string; timestamp: number; type: string; payload: Record<string, unknown> }[]): Record<number, QuestionState>;
+export function applyTerminalAnswer(states: Record<number, QuestionState>, event: { payload: Record<string, unknown>; timestamp: number }): Record<number, QuestionState>;
 export function makeAnswerEvent(input: { questionId: number; selected: string; correct: boolean; responseMs: number; eventId: string; deviceId: string; timestamp: number }): { eventId: string; deviceId: string; timestamp: number; type: "ANSWER_RECORDED"; payload: Record<string, unknown> };

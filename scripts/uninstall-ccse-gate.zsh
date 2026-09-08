@@ -13,14 +13,7 @@ tmp_file="${rc_file}.ccse-uninstall.$$"
 trap 'rm -f "$tmp_file"' EXIT
 
 awk -v comment="$comment" -v snippet="$snippet" '
-  $0 == comment { pending = 1; next }
-  pending {
-    if ($0 == snippet) { pending = 0; next }
-    print comment
-    pending = 0
-  }
-  { print }
-  END { if (pending) print comment }
+  $0 != comment && $0 != snippet { print }
 ' "$rc_file" >| "$tmp_file"
 mv "$tmp_file" "$rc_file"
 trap - EXIT
