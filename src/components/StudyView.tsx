@@ -10,7 +10,7 @@ import type { AppState } from "@/lib/types";
 import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
-import { dailyGoalProgress, daysUntilExam } from "@/lib/dailyGoal";
+import { dailyGoalProgress, daysUntilExam, EXAM_DATE } from "@/lib/dailyGoal";
 
 function QuestionCounter({ value }: { value: number }) {
   return (
@@ -203,7 +203,7 @@ export default function StudyView({
       >
         <strong>Today {dailyGoal.answered}/{dailyGoal.target}</strong>
         <span>Streak {dailyGoal.streak}d</span>
-        <span>Exam {daysUntilExam()}d</span>
+        <span>Exam {EXAM_DATE.label} · {daysUntilExam()}d</span>
       </p>
 
       <section className="nf-stack study-question">

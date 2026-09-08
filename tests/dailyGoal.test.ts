@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { blankState, makeEvent } from "@/lib/events";
-import { dailyGoalProgress, daysUntilExam } from "@/lib/dailyGoal";
+import { dailyGoalProgress, daysUntilExam, EXAM_DATE } from "@/lib/dailyGoal";
 
 describe("dailyGoalProgress", () => {
   it("counts only answer events from the current local day", () => {
@@ -43,5 +43,9 @@ describe("dailyGoalProgress", () => {
   it("calculates the exam countdown", () => {
     const now = new Date(2026, 7, 9, 12, 0).getTime();
     expect(daysUntilExam(now)).toBe(46);
+  });
+
+  it("keeps the exam date on 24 September 2026", () => {
+    expect(EXAM_DATE).toEqual({ year: 2026, month: 8, day: 24, label: "24 September 2026" });
   });
 });

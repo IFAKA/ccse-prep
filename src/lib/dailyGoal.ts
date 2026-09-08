@@ -7,7 +7,12 @@ export type DailyGoalProgress = {
   streak: number;
 };
 
-export const EXAM_DATE = "24/09/2026";
+export const EXAM_DATE = {
+  year: 2026,
+  month: 8,
+  day: 24,
+  label: "24 September 2026",
+} as const;
 
 function localDayKey(timestamp: number) {
   const date = new Date(timestamp);
@@ -47,6 +52,6 @@ export function dailyGoalProgress(state: AppState, now = Date.now()): DailyGoalP
 
 export function daysUntilExam(now = Date.now()) {
   const today = localMidnight(now).getTime();
-  const exam = new Date(2026, 8, 24).getTime();
+  const exam = new Date(EXAM_DATE.year, EXAM_DATE.month, EXAM_DATE.day).getTime();
   return Math.max(0, Math.ceil((exam - today) / 86_400_000));
 }
