@@ -19,7 +19,7 @@ function Bar({ answers, total, unicode, enabled }) {
   return h(Line, null,
     h(Line, { color: colorRole(enabled, "green") }, filled.repeat(correctWidth)),
     h(Line, { color: colorRole(enabled, "red") }, filled.repeat(incorrectWidth)),
-    h(Line, { color: colorRole(enabled, "gray") }, empty.repeat(remainingWidth)),
+    h(Line, { color: colorRole(enabled, "white") }, empty.repeat(remainingWidth)),
     ` ${answers.length}/${total}`,
   );
 }
@@ -88,17 +88,17 @@ export function TerminalApp({ bank, states, events, deviceId, appendEvent, now =
       h(Line, null, `${done.newlyMastered} newly mastered · ${done.weak} weak · ${done.averageResponseMs}ms average response`),
       h(Line, { marginTop: 1, color: colorRole(enabled, "green") }, "Terminal unlocked."),
       h(Line, null, done.nextAction),
-      h(Line, { marginTop: 1, color: colorRole(enabled, "gray") }, "Press Enter to close · Ctrl-C Exit")
+      h(Line, { marginTop: 1, color: colorRole(enabled, "white") }, "Press Enter to close · Ctrl-C Exit")
     );
   }
   return h(Box, { flexDirection: "column", width: Math.min(stdout?.columns ?? 80, 96), paddingX: 1 },
-    h(Box, { justifyContent: "space-between" }, h(Line, { bold: true, color: colorRole(enabled, "cyan") }, "CCSE PREP"), h(Line, { color: colorRole(enabled, "gray") }, `Gate ${summary.answered}/${total} · ${Math.round(summary.accuracy * 100)}% · ${metrics.streak} day streak`)),
-    h(Line, { color: colorRole(enabled, "gray") }, "────────────────────────────────────────────────────────"),
+    h(Box, { justifyContent: "space-between" }, h(Line, { bold: true, color: colorRole(enabled, "cyan") }, "CCSE PREP"), h(Line, { color: colorRole(enabled, "white") }, `Gate ${summary.answered}/${total} · ${Math.round(summary.accuracy * 100)}% · ${metrics.streak} day streak`)),
+    h(Line, { color: colorRole(enabled, "black") }, "────────────────────────────────────────────────────────"),
     h(Box, { justifyContent: "space-between" }, h(Line, null, `Due ${metrics.due}  ·  Weak ${metrics.weak}  ·  Learning ${metrics.learning}  ·  Mastered ${metrics.mastered}`), h(Line, { color: colorRole(enabled, "yellow") }, `Exam ${Math.max(0, Math.ceil((new Date("2026-11-03").getTime() - now) / DAY))}d`)),
-    h(Box, { marginTop: 1, flexDirection: "column" }, h(Line, { color: colorRole(enabled, "gray") }, `Task ${current?.task ?? "—"} · Question ${summary.answered + 1} of ${total}`), h(Line, { bold: true }, current?.question ?? "No questions available."), ...optionLines),
+    h(Box, { marginTop: 1, flexDirection: "column" }, h(Line, { color: colorRole(enabled, "white") }, `Task ${current?.task ?? "—"} · Question ${summary.answered + 1} of ${total}`), h(Line, { bold: true }, current?.question ?? "No questions available."), ...optionLines),
     h(Box, { marginTop: 1 }, h(Bar, { answers, total, unicode, enabled })),
     message && h(Line, { marginTop: 1, color: colorRole(enabled, "yellow") }, message),
-    h(Line, { marginTop: 1, color: colorRole(enabled, "gray") }, summary.answered >= total ? "Press Enter to unlock · J/K/L to keep reviewing" : "J/K/L Select Answer · Enter Unlocks After 10 · Ctrl-C Exit")
+    h(Line, { marginTop: 1, color: colorRole(enabled, "white") }, summary.answered >= total ? "Press Enter to unlock · J/K/L to keep reviewing" : "J/K/L Select Answer · Enter Unlocks After 10 · Ctrl-C Exit")
   );
 }
 
