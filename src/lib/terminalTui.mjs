@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Text, useApp, useInput, useStdout } from "ink";
-import { applyTerminalAnswer, buildSessionPlan, completionSummary, reviewInterval, terminalDashboardMetrics, terminalSessionSummary } from "./terminalQuiz.mjs";
+import { applyTerminalAnswer, buildSessionPlan, completionSummary, terminalDashboardMetrics, terminalSessionSummary } from "./terminalQuiz.mjs";
 
 const h = React.createElement;
 const DAY = 24 * 60 * 60 * 1000;
@@ -59,7 +59,7 @@ export function TerminalApp({ bank, states, events, deviceId, appendEvent, now =
     const answer = { correct, responseMs: event.payload.responseMs, questionId: current.id };
     const nextAnswers = [...answers, answer];
     setAnswers(nextAnswers);
-    setFeedback({ correct, selected: answerKey, correctKey: current.answer, interval: reviewInterval(correct, states[current.id]) });
+    setFeedback({ correct, selected: answerKey });
     setStartedAt(timestamp);
     setMessage("");
   });
@@ -85,7 +85,6 @@ export function TerminalApp({ bank, states, events, deviceId, appendEvent, now =
     h(Box, { justifyContent: "space-between" }, h(Line, null, `Due ${metrics.due}  ·  Weak ${metrics.weak}  ·  Learning ${metrics.learning}  ·  Mastered ${metrics.mastered}`), h(Line, { color: colorRole(enabled, "yellow") }, `Exam ${Math.max(0, Math.ceil((new Date("2026-11-03").getTime() - now) / DAY))}d`)),
     h(Box, { marginTop: 1, flexDirection: "column" }, h(Line, { color: colorRole(enabled, "gray") }, `Task ${current?.task ?? "—"} · Question ${summary.answered + 1} of ${total}`), h(Line, { bold: true }, current?.question ?? "No questions available."), ...optionLines),
     h(Box, { marginTop: 1 }, h(Bar, { value: summary.answered, total, unicode })),
-    feedback && h(Box, { marginTop: 1, flexDirection: "column" }, h(Line, { bold: true, color: colorRole(enabled, feedback.correct ? "green" : "red") }, feedback.correct ? "Correct" : "Not Quite"), h(Line, null, `Selected ${feedback.selected.toUpperCase()} · Correct ${feedback.correctKey.toUpperCase()} · Review again in ${feedback.interval} day${feedback.interval === 1 ? "" : "s"}.`)),
     message && h(Line, { marginTop: 1, color: colorRole(enabled, "yellow") }, message),
     h(Line, { marginTop: 1, color: colorRole(enabled, "gray") }, summary.answered >= total ? "Press Enter to unlock · J/K/L to keep reviewing" : "J/K/L Select Answer · Enter Unlocks After 10 · Ctrl-C Exit")
   );
