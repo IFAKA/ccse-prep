@@ -8,6 +8,11 @@
   .daily-goal > strong { color: inherit; font-weight: inherit; }
   .daily-goal[data-complete="true"] { border-color: var(--nf-color-border); }
   .daily-goal[data-complete="true"] > strong { margin-block: calc(-1 * var(--nf-border-width)); margin-inline-start: calc(-1 * var(--nf-border-width)); border: var(--nf-border-width) solid var(--nf-color-success); border-radius: var(--nf-radius-pill) 0 0 var(--nf-radius-pill); background: color-mix(in srgb, var(--nf-color-success) 14%, var(--nf-color-surface)); color: var(--nf-color-success); }
+  .study-session-complete { margin: 0; color: var(--nf-color-success); font-size: var(--nf-text-sm); }
+  .study-confetti { position: fixed; inset: 0; z-index: 30; overflow: hidden; pointer-events: none; }
+  .study-confetti > span { --confetti-x: calc((var(--confetti-index) * 37) % 100); --confetti-delay: calc((var(--confetti-index) % 8) * 35ms); --confetti-color: hsl(calc((var(--confetti-index) * 47) % 360) 78% 58%); position: absolute; inset-block-start: -1rem; inset-inline-start: calc(var(--confetti-x) * 1%); inline-size: 0.55rem; block-size: 0.9rem; background: var(--confetti-color); transform: rotate(calc(var(--confetti-index) * 29deg)); animation: study-confetti-fall 2200ms var(--nf-ease-out) var(--confetti-delay) both; }
+  @keyframes study-confetti-fall { from { opacity: 0; transform: translateY(-1rem) rotate(0deg); } 12% { opacity: 1; } to { opacity: 0; transform: translateY(105dvh) rotate(620deg); } }
+  @media (prefers-reduced-motion: reduce) { .study-confetti > span { animation: none; opacity: 0; } }
   @media (max-width: 55.99rem) {
     .study-view { min-block-size: calc(100dvh - var(--nf-space-4)); padding-block-end: calc(5.5rem + env(safe-area-inset-bottom)); }
     .study-question { flex: 1 1 auto; justify-content: center; min-block-size: 0; }

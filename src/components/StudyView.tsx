@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { questions, type AnswerKey, type Question, type Task } from "@/data/questions";
 import { chunksForQuestion } from "@/data/manualKnowledge";
 import { makeEvent, reduceEvent } from "@/lib/events";
@@ -11,6 +11,9 @@ import { buildExternalAiPrompt } from "@/lib/aiPrompt";
 import { PageHeader } from "./PageLayout";
 import { playUiSound } from "@/lib/sound";
 import { dailyGoalProgress, daysUntilExam, EXAM_DATE } from "@/lib/dailyGoal";
+
+const SESSION_MINIMUM = 10;
+const CONFETTI_PIECES = Array.from({ length: 24 }, (_, index) => index);
 
 function QuestionCounter({ value }: { value: number }) {
   return (
@@ -41,6 +44,9 @@ export default function StudyView({
   const [selected, setSelected] = useState<AnswerKey>();
   const [submitted, setSubmitted] = useState(false);
   const [startedAt, setStartedAt] = useState(Date.now());
+  const [answeredInSession, setAnsweredInSession] = useState(0);
+  const [correctInSession, setCorrectInSession] = useState(0);
+  const [celebrating, setCelebrating] = useState(false);
   const [aiStatus, setAiStatus] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [closingShortcuts, setClosingShortcuts] = useState(false);
@@ -63,20 +69,33 @@ export default function StudyView({
     };
   }, [showShortcuts]);
 
+  useEffect(() => {
+    if (!celebrating) return;
+    const timer = window.setTimeout(() => setCelebrating(false), 2600);
+    return () => window.clearTimeout(timer);
+  }, [celebrating]);
+
   const submit = useCallback(async () => {
     if (!selected || submitted) return;
 
+    const isCorrect = grade(question, selected);
+
     const event = makeEvent("ANSWER_RECORDED", {
       questionId: question.id,
-      correct: grade(question, selected),
+      correct: isCorrect,
       responseMs: Date.now() - startedAt,
     });
 
     await appendEvent(event);
     update(reduceEvent(state, event));
     setSubmitted(true);
-    playUiSound(grade(question, selected) ? "correct" : "incorrect");
-  }, [question, selected, startedAt, state, submitted, update]);
+    setAnsweredInSession((count) => count + 1);
+    setCorrectInSession((count) => count + (isCorrect ? 1 : 0));
+    if (answeredInSession === SESSION_MINIMUM - 1 && correctInSession === SESSION_MINIMUM - 1 && isCorrect) {
+      setCelebrating(true);
+    }
+    playUiSound(isCorrect ? "correct" : "incorrect");
+  }, [answeredInSession, correctInSession, question, selected, startedAt, state, submitted, update]);
 
   const next = useCallback(() => {
     setQuestion(
@@ -205,6 +224,18 @@ export default function StudyView({
         <span>Streak {dailyGoal.streak}d</span>
         <span>Exam {EXAM_DATE.label} · {daysUntilExam()}d</span>
       </p>
+
+      {answeredInSession >= SESSION_MINIMUM && (
+        <p className="study-session-complete" role="status" aria-live="polite">
+          <strong>Session complete</strong> · Keep going whenever you’re ready.
+        </p>
+      )}
+
+      {celebrating && (
+        <div className="study-confetti" aria-hidden="true">
+          {CONFETTI_PIECES.map((piece) => <span key={piece} style={{ "--confetti-index": piece } as CSSProperties} />)}
+        </div>
+      )}
 
       <section className="nf-stack study-question">
         <form className="nf-form">
