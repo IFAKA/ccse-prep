@@ -20,12 +20,7 @@ function Bar({ answers, total, unicode, enabled }) {
     h(Line, { color: colorRole(enabled, "green") }, filled.repeat(correctWidth)),
     h(Line, { color: colorRole(enabled, "red") }, filled.repeat(incorrectWidth)),
     h(Line, { color: colorRole(enabled, "gray") }, empty.repeat(remainingWidth)),
-    ` ${answers.length}/${total} · `,
-    h(Line, { color: colorRole(enabled, "green") }, `✓${correct}`),
-    " · ",
-    h(Line, { color: colorRole(enabled, "red") }, `✕${incorrect}`),
-    " · ",
-    `${Math.max(0, total - answers.length)} left`,
+    ` ${answers.length}/${total}`,
   );
 }
 function colorRole(enabled, role) { return enabled ? role : undefined; }
