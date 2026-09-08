@@ -6,10 +6,27 @@ const h = React.createElement;
 const DAY = 24 * 60 * 60 * 1000;
 
 function Line({ children, ...props }) { return h(Text, props, children); }
-function Bar({ value, total, unicode }) {
+function Bar({ answers, total, unicode, enabled }) {
   const width = 24;
-  const filled = Math.round((value / Math.max(1, total)) * width);
-  return h(Line, { color: "cyan" }, `${unicode ? "█".repeat(filled) + "░".repeat(width - filled) : "#".repeat(filled) + "-".repeat(width - filled)} ${value}/${total}`);
+  const correct = answers.filter((answer) => answer.correct).length;
+  const incorrect = answers.length - correct;
+  const correctWidth = Math.round((correct / Math.max(1, total)) * width);
+  const incorrectWidth = Math.round((incorrect / Math.max(1, total)) * width);
+  const remainingWidth = Math.max(0, width - correctWidth - incorrectWidth);
+  const filled = unicode ? "█" : "#";
+  const empty = unicode ? "░" : "-";
+
+  return h(Line, null,
+    h(Line, { color: colorRole(enabled, "green") }, filled.repeat(correctWidth)),
+    h(Line, { color: colorRole(enabled, "red") }, filled.repeat(incorrectWidth)),
+    h(Line, { color: colorRole(enabled, "gray") }, empty.repeat(remainingWidth)),
+    ` ${answers.length}/${total} · `,
+    h(Line, { color: colorRole(enabled, "green") }, `✓${correct}`),
+    " · ",
+    h(Line, { color: colorRole(enabled, "red") }, `✕${incorrect}`),
+    " · ",
+    `${Math.max(0, total - answers.length)} left`,
+  );
 }
 function colorRole(enabled, role) { return enabled ? role : undefined; }
 
@@ -84,7 +101,7 @@ export function TerminalApp({ bank, states, events, deviceId, appendEvent, now =
     h(Line, { color: colorRole(enabled, "gray") }, "────────────────────────────────────────────────────────"),
     h(Box, { justifyContent: "space-between" }, h(Line, null, `Due ${metrics.due}  ·  Weak ${metrics.weak}  ·  Learning ${metrics.learning}  ·  Mastered ${metrics.mastered}`), h(Line, { color: colorRole(enabled, "yellow") }, `Exam ${Math.max(0, Math.ceil((new Date("2026-11-03").getTime() - now) / DAY))}d`)),
     h(Box, { marginTop: 1, flexDirection: "column" }, h(Line, { color: colorRole(enabled, "gray") }, `Task ${current?.task ?? "—"} · Question ${summary.answered + 1} of ${total}`), h(Line, { bold: true }, current?.question ?? "No questions available."), ...optionLines),
-    h(Box, { marginTop: 1 }, h(Bar, { value: summary.answered, total, unicode })),
+    h(Box, { marginTop: 1 }, h(Bar, { answers, total, unicode, enabled })),
     message && h(Line, { marginTop: 1, color: colorRole(enabled, "yellow") }, message),
     h(Line, { marginTop: 1, color: colorRole(enabled, "gray") }, summary.answered >= total ? "Press Enter to unlock · J/K/L to keep reviewing" : "J/K/L Select Answer · Enter Unlocks After 10 · Ctrl-C Exit")
   );
